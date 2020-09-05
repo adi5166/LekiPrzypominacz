@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <dimen name="medicineFragmentHorizontal">14dp</dimen>
+  <dimen name="medicineFragmentVertical">10dp</dimen>
+  <dimen name="medicineFragmentBottom">80dp</dimen>
+</resources>
