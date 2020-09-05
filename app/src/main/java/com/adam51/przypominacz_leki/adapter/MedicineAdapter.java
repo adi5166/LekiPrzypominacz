@@ -7,11 +7,16 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.adam51.przypominacz_leki.Pill;
 import com.adam51.przypominacz_leki.databinding.FragmentMedicineBinding;
 import com.adam51.przypominacz_leki.databinding.ItemPillBinding;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.MedicineHolder> {
+  private List<Pill> pills = new ArrayList<>();
 
   // Data
   @NonNull
@@ -26,7 +31,9 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.Medici
   @Override
   public void onBindViewHolder(@NonNull MedicineHolder holder, int position) {
     //holder.bindView(pillList.get(position));
-    holder.itemBinding.medicineItemName.setText(String.valueOf(position));
+    //holder.itemBinding.medicineItemName.setText(String.valueOf(position));
+    Pill currentPill = pills.get(position);
+    holder.itemBinding.medicineItemName.setText(currentPill.getName());
 
   }
 
