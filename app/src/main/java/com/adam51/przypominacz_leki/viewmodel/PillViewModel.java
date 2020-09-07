@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.adam51.przypominacz_leki.Pill;
+import com.adam51.przypominacz_leki.model.Pill;
 import com.adam51.przypominacz_leki.repo.PillRepository;
 
 import java.util.List;

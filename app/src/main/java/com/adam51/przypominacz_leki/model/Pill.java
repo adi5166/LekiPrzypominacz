@@ -1,4 +1,4 @@
-package com.adam51.przypominacz_leki;
+package com.adam51.przypominacz_leki.model;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;

@@ -9,7 +9,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import com.adam51.przypominacz_leki.Pill;
+import com.adam51.przypominacz_leki.model.Pill;
 import com.adam51.przypominacz_leki.dao.PillDao;
 
 @Database(entities = {Pill.class}, version = 1)

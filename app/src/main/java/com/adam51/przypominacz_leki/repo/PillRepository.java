@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 
 import androidx.lifecycle.LiveData;
 
-import com.adam51.przypominacz_leki.Pill;
+import com.adam51.przypominacz_leki.model.Pill;
 import com.adam51.przypominacz_leki.dao.PillDao;
 import com.adam51.przypominacz_leki.database.PillDatabase;
 

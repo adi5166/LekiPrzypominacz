@@ -7,7 +7,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.adam51.przypominacz_leki.Pill;
+import com.adam51.przypominacz_leki.model.Pill;
 
 import java.util.List;
 
