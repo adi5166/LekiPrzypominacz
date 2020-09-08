@@ -3,12 +3,17 @@ package com.adam51.przypominacz_leki.adapter;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.adam51.przypominacz_leki.Util;
+import com.adam51.przypominacz_leki.activity.MainActivity;
 import com.adam51.przypominacz_leki.model.Pill;
 import com.adam51.przypominacz_leki.R;
 import com.adam51.przypominacz_leki.databinding.ItemPillBinding;
@@ -19,6 +24,11 @@ import java.util.List;
 
 public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.MedicineHolder> {
   private List<Pill> pills = new ArrayList<>();
+  private OnPillListener pillListener;
+
+  public MedicineAdapter (OnPillListener onPillListener){
+    this.pillListener = onPillListener;
+  }
 
   // Data
   @NonNull
@@ -27,7 +37,7 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.Medici
 
     LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
     ItemPillBinding itemPillBinding = ItemPillBinding.inflate(layoutInflater, parent, false);
-    return new MedicineHolder(itemPillBinding);
+    return new MedicineHolder(itemPillBinding, pillListener);
   }
 
   @Override
@@ -36,8 +46,11 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.Medici
     Pill currentPill = pills.get(position);
     holder.itemBinding.medicineItemName.setText(currentPill.getName());
 
-    Drawable drawable;
     Context context = holder.itemView.getContext();
+    Util.SetImageView(context, currentPill.getPicPath(), holder.itemBinding.medicineItemImage);
+    /*
+    Drawable drawable;
+
     if(!currentPill.getPicPath().isEmpty()) {
       switch (currentPill.getPicPath()) {
         case "pill_oval_orange":
@@ -51,16 +64,8 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.Medici
       }
     }else drawable = ContextCompat.getDrawable(context, R.drawable.pill_oval);
 
-    /*
-    Can use:
-    drawable = ContextCompat.getDrawable(context, R.drawable.pill_oval);
-    drawable = AppCompatResources.getDrawable(context, R.drawable.pill_oval);
-
-    Can't use
-    drawable = ResourcesCompat.getDrawable(Resources.getSystem(), R.drawable.pill_oval, null);
-    */
-
     holder.itemBinding.medicineItemImage.setImageDrawable(drawable);
+    */
   }
 
   @Override
@@ -74,15 +79,27 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.Medici
     //beter from recyclerview
   }
 
-  class MedicineHolder extends RecyclerView.ViewHolder {
+  class MedicineHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     ItemPillBinding itemBinding;
+    OnPillListener onPillListener;
 
-    public MedicineHolder(@NonNull ItemPillBinding itemBinding) {
+    public MedicineHolder(@NonNull ItemPillBinding itemBinding, OnPillListener onPillListener) {
       super(itemBinding.getRoot());
       this.itemBinding = itemBinding;
-      // Można dodać click listiner
+      this.onPillListener = onPillListener;
+
+      itemView.setOnClickListener(this);
       // Lepiej używać interfejsu
     }
+
+    @Override
+    public void onClick(View v) {
+      onPillListener.onPillClick(getAdapterPosition());
+    }
+  }
+
+  public interface OnPillListener{
+    void onPillClick(int position);
   }
 
 }

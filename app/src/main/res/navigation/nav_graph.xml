@@ -14,7 +14,12 @@
     android:id="@+id/medicineFragment"
     android:name="com.adam51.przypominacz_leki.fragment.MedicineFragment"
     android:label="Medicine"
-    tools:layout="@layout/fragment_medicine" />
+    tools:layout="@layout/fragment_medicine">
+    <action
+      android:id="@+id/viewPillDetail"
+      app:destination="@id/pillDetailFragment"
+      app:launchSingleTop="false" />
+  </fragment>
   <fragment
     android:id="@+id/otherFragment"
     android:name="com.adam51.przypominacz_leki.fragment.OtherFragment"
@@ -25,4 +30,13 @@
     android:name="com.adam51.przypominacz_leki.fragment.SurveyFragment"
     android:label="Survey"
     tools:layout="@layout/fragment_survey" />
+  <fragment
+    android:id="@+id/pillDetailFragment"
+    android:name="com.adam51.przypominacz_leki.fragment.PillDetailFragment"
+    android:label="PillDetailFragment"
+    tools:layout="@layout/fragment_detail_pill">
+    <argument
+      android:name="pill_id"
+      app:argType="integer" />
+  </fragment>
 </navigation>

@@ -28,4 +28,6 @@ public interface PillDao {
 
   @Query("SELECT * FROM pill_table")
   LiveData<List<Pill>> getAllPills();
+
+  //TODO dodać metode zwracającą po ID ?
 }
