@@ -39,4 +39,5 @@ public class PillViewModel extends AndroidViewModel {
   public LiveData<List<Pill>> getAllPills() {
     return allPills;
   }
+
 }
