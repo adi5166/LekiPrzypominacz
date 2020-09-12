@@ -49,6 +49,9 @@
       app:destination="@id/medicineFragment"
       app:popUpTo="@id/medicineFragment"
       app:popUpToInclusive="true" />
+    <action
+      android:id="@+id/action_edit_pill_from_detail"
+      app:destination="@id/addEditPillFragment" />
   </fragment>
   <fragment
     android:id="@+id/addEditPillFragment"
@@ -68,5 +71,9 @@
       android:name="toolbarName"
       android:defaultValue="Add Pill"
       app:argType="string"/>
+    <argument
+      android:name="pill_position"
+      app:argType="integer"
+      android:defaultValue="-5" />
   </fragment>
 </navigation>

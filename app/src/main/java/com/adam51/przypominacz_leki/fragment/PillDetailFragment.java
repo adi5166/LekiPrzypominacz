@@ -4,6 +4,9 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -18,6 +21,7 @@ import androidx.navigation.Navigation;
 
 import com.adam51.przypominacz_leki.R;
 import com.adam51.przypominacz_leki.Util;
+import com.adam51.przypominacz_leki.adapter.MedicineAdapter;
 import com.adam51.przypominacz_leki.databinding.FragmentDetailPillBinding;
 import com.adam51.przypominacz_leki.model.Pill;
 import com.adam51.przypominacz_leki.viewmodel.PillViewModel;
@@ -31,6 +35,7 @@ public class PillDetailFragment extends Fragment {
   private FragmentDetailPillBinding detailPillBinding;
   private PillViewModel pillViewModel;
   private NavController navController;
+  private MedicineAdapter medicineAdapter;
 
   public PillDetailFragment() {
   }
@@ -46,11 +51,13 @@ public class PillDetailFragment extends Fragment {
     return view;
   }
 
+
   @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
 
     navController = Navigation.findNavController(view);
+    setHasOptionsMenu(true);
 
     try {
       final Context context = getContext();
@@ -78,7 +85,39 @@ public class PillDetailFragment extends Fragment {
       Toast.makeText(getContext(), R.string.error_get_pill_detail, Toast.LENGTH_SHORT).show();
     }
   }
-/*
+
+  @Override
+  public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+    //menu.clear();
+    inflater.inflate(R.menu.detail_pill_menu, menu);
+    super.onCreateOptionsMenu(menu, inflater);
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    switch (item.getItemId()) {
+      case R.id.menu_icon_pill_edit: {
+        int position = PillDetailFragmentArgs.fromBundle(getArguments()).getPillId();
+        navController.navigate(PillDetailFragmentDirections.actionEditPillFromDetail()
+                .setMode("Edit")
+                .setPillPosition(position)
+                .setToolbarName("Edit Pill"));
+        return true;
+      }
+      case R.id.menu_icon_pill_delete: {
+        int position = PillDetailFragmentArgs.fromBundle(getArguments()).getPillId();
+        pillViewModel.delete(pillViewModel.getAllPills().getValue().get(position));
+        navController.navigate(PillDetailFragmentDirections.actionPillDetailFragmentToMedicineFragment());
+        Toast.makeText(getActivity(), "Pill deleted", Toast.LENGTH_SHORT).show();
+        //delete
+        return true;
+      }
+      default:
+        break;
+    }
+    return false;
+  }
+  /*
   @Override
   public void onDestroyView() {
     super.onDestroyView();

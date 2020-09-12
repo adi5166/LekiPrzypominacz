@@ -24,12 +24,13 @@ public abstract class PillDatabase extends RoomDatabase {
       instance = Room.databaseBuilder(context.getApplicationContext(),
               PillDatabase.class, "pill_database")
               .fallbackToDestructiveMigration()
-              .addCallback(roomCallback)
+              //.addCallback(roomCallback)
               .build();
     }
     return instance;
   }
-
+/*
+//TODO czy usunąć?
   private static RoomDatabase.Callback roomCallback = new RoomDatabase.Callback() {
     @Override
     public void onCreate(@NonNull SupportSQLiteDatabase db) {
@@ -52,4 +53,6 @@ public abstract class PillDatabase extends RoomDatabase {
       return null;
     }
   }
+
+ */
 }

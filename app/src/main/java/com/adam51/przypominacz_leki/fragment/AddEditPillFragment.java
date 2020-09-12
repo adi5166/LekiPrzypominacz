@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.ui.NavigationUI;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -63,21 +62,40 @@ public class AddEditPillFragment extends Fragment {
     adapter = new ImagePillAdapter(getActivity(), imagePillList);
     addEditPillBinding.spinnerPillAdd.setAdapter(adapter);
 
+    if(getArguments() != null) {
+      String mode = AddEditPillFragmentArgs.fromBundle(getArguments()).getMode();
+      if (mode.equals("Edit")) {
+        /*
+        int position = AddEditPillFragmentArgs.fromBundle(getArguments()).getPillPosition();
+        if(position != -5 ) {
+          Pill current_pill = pillViewModel.getAllPills().getValue().get(position);
+          addEditPillBinding.pillDetailName.setText(current_pill.getName());
+          addEditPillBinding.pillDetailDescription.setText(current_pill.getDescription());
+          String picPath = current_pill.getPicPath();
+
+        }
+*/
+        //TODO edit
+        Log.d(TAG, "onViewCreated: Edit mode");
+      } else if (mode.equals("Add")) {
+        Log.d(TAG, "onViewCreated: Add mode");
+      }
+    }
+
     addEditPillBinding.addPillButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
         savePill();
       }
     });
-
-    String mode = AddEditPillFragmentArgs.fromBundle(getArguments()).getMode();
-    if(mode.equals("Edit")){
-      //TODO edit
-      Log.d(TAG, "onViewCreated: Edit mode");
-    }else if(mode.equals("Add")){
-      Log.d(TAG, "onViewCreated: Add mode");
-    }
   }
+/*
+  private int getSpinnerPosition(Spinner spinner, String string){
+    imagePillList.
+    for(int i=0; i<spinner.getCount(); i++)
+      if(spinner.getItemAtPosition(i).getName())
+  }
+  */
 
   private void initSpinnerList() {
     imagePillList = new ArrayList<>();
@@ -96,7 +114,6 @@ public class AddEditPillFragment extends Fragment {
                 addEditPillBinding.textInputDescription.getEditText().getText().toString(),
                 imagePill.getName()
         );
-
         pillViewModel.insert(pill);
 
         Toast.makeText(getActivity(), "Pill saved", Toast.LENGTH_SHORT).show();
@@ -107,28 +124,32 @@ public class AddEditPillFragment extends Fragment {
       } else {
         Toast.makeText(getActivity(), "Error: Empty fields", Toast.LENGTH_SHORT).show();
       }
-    }catch (NullPointerException ex){
+    } catch (NullPointerException ex) {
       Toast.makeText(getActivity(), "Error while saving data", Toast.LENGTH_SHORT).show();
     }
   }
 
   @Override
   public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-    switch (AddEditPillFragmentArgs.fromBundle(getArguments()).getMode()){
-      case "Add":
+    switch (AddEditPillFragmentArgs.fromBundle(getArguments()).getMode()) {
+      case "Add": {
         menu.clear();
         inflater.inflate(R.menu.add_pill_menu, menu);
         break;
-        //TODO dodać meny edit
+      }
+      case "Edit":{
+        menu.clear();
+        inflater.inflate(R.menu.edit_pill_menu, menu);
+        break;
+      }
     }
-
     super.onCreateOptionsMenu(menu, inflater);
   }
 
   @Override
   public boolean onOptionsItemSelected(@NonNull MenuItem item) {
     switch (item.getItemId()) {
-      case R.id.save_pill:
+      case R.id.menu_icon_pill_save:
         savePill();
         return true;
       default:

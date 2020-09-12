@@ -70,7 +70,12 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.Medici
   public void setPills(List<Pill> pills) {
     this.pills = pills;
     notifyDataSetChanged();
-    //beter from recyclerview
+    //TODO beter from recyclerview
+  }
+
+  //używane z klasy maciezrzystej / parent
+  public Pill getPillAt(int position) {
+    return pills.get(position);
   }
 
   class MedicineHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
