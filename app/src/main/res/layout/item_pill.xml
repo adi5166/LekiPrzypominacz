@@ -7,8 +7,8 @@
 
   <ImageView
     android:id="@+id/medicineItemImage"
-    android:layout_width="48dp"
-    android:layout_height="48dp"
+    android:layout_width="@dimen/pill_size"
+    android:layout_height="@dimen/pill_size"
     android:layout_margin="8dp"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintStart_toStartOf="parent"

@@ -1,19 +1,20 @@
 package com.adam51.przypominacz_leki.fragment;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.adam51.przypominacz_leki.R;
 import com.adam51.przypominacz_leki.Util;
@@ -29,8 +30,7 @@ import static android.content.ContentValues.TAG;
 public class PillDetailFragment extends Fragment {
   private FragmentDetailPillBinding detailPillBinding;
   private PillViewModel pillViewModel;
-  private Context context;
-  private int position;
+  private NavController navController;
 
   public PillDetailFragment() {
   }
@@ -50,12 +50,16 @@ public class PillDetailFragment extends Fragment {
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
 
+    navController = Navigation.findNavController(view);
 
     try {
-      context = getContext();
-      if (getArguments() == null || context == null) {
-        //TODO brak danych lub contextu powrót do Medicinefragment
+      final Context context = getContext();
+      final int position;
+      if (getArguments() == null) {
+        navController.navigate(PillDetailFragmentDirections.actionPillDetailFragmentToMedicineFragment());
+        Toast.makeText(getContext(), R.string.error_get_pill_detail, Toast.LENGTH_SHORT).show();
       } else {
+        //TODO zamienić z pozycji na obiekt Pill
         position = PillDetailFragmentArgs.fromBundle(getArguments()).getPillId();
         pillViewModel.getAllPills().observe(getViewLifecycleOwner(), new Observer<List<Pill>>() {
           @Override
@@ -64,32 +68,15 @@ public class PillDetailFragment extends Fragment {
             //pobieranie obiektu na danej pozycji
             detailPillBinding.pillDetailDescription.setText(pill.getDescription());
             detailPillBinding.pillDetailName.setText(pill.getName());
-            Util.SetImageView(context, pill.getPicPath(), detailPillBinding.imageView);
-            /*
-            Drawable drawable;
-
-            if (!pill.getPicPath().isEmpty()) {
-              switch (pill.getPicPath()) {
-                case "pill_oval_orange":
-                  drawable = ContextCompat.getDrawable(context, R.drawable.pill_oval_orange);
-                  break;
-                case "pill_oval_blue":
-                  drawable = ContextCompat.getDrawable(context, R.drawable.pill_oval_blue);
-                  break;
-                default:
-                  drawable = ContextCompat.getDrawable(context, R.drawable.pill_oval);
-              }
-            } else drawable = ContextCompat.getDrawable(context, R.drawable.pill_oval);
-            detailPillBinding.imageView.setImageDrawable(drawable);
-            */
+            Util.SetPillImageView(context, pill.getPicPath(), detailPillBinding.imageView);
           }
         });
       }
     } catch (NullPointerException en) {
       Log.d(TAG, "NullPointerException at getAllPills");
+      navController.navigate(PillDetailFragmentDirections.actionPillDetailFragmentToMedicineFragment());
+      Toast.makeText(getContext(), R.string.error_get_pill_detail, Toast.LENGTH_SHORT).show();
     }
-    //odebranie z bazy konkretnego obiektu, chyba trzeba zmienić prametr na ID
-    //zrobione przez ViewModel
   }
 /*
   @Override

@@ -2,17 +2,49 @@ package com.adam51.przypominacz_leki;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
+import static android.content.ContentValues.TAG;
+
 public class Util {
 
-  @Nullable
-  public static void SetImageView(@Nullable Context context, String picPath, @Nullable ImageView imageView) {
+  public static void SetPillImageView(int resId, @Nullable ImageView imageView){
+    if(imageView == null) {
+      return;
+    }
 
-    //TODO co gdy ctx lub image jest null
+    try {
+      imageView.setImageResource(resId);
+    }catch (Exception ex){
+      Log.e(TAG, "SetPillImageView: error with resId", ex);
+      imageView.setImageResource(R.drawable.pill_oval);
+    }
+    /*
+    switch (resId) {
+      case R.drawable.pill_oval_orange:
+        imageView.setImageResource(R.drawable.pill_oval_orange);
+        break;
+      case R.drawable.pill_oval_blue:
+        imageView.setImageResource(R.drawable.pill_oval_blue);
+        break;
+      case R.drawable.pill_oval_green:
+        imageView.setImageResource(R.drawable.pill_oval_green);
+        break;
+      default:
+        imageView.setImageResource(R.drawable.pill_oval);
+    }
+    */
+  }
+
+  public static void SetPillImageView(@Nullable Context context, String picPath, @Nullable ImageView imageView) {
+
+    if(context == null || imageView == null){
+      return;
+    }
     Drawable drawable;
     if (!picPath.isEmpty()) {
       switch (picPath) {
@@ -21,6 +53,9 @@ public class Util {
           break;
         case "pill_oval_blue":
           drawable = ContextCompat.getDrawable(context, R.drawable.pill_oval_blue);
+          break;
+        case "pill_oval_green":
+          drawable = ContextCompat.getDrawable(context, R.drawable.pill_oval_green);
           break;
         default:
           drawable = ContextCompat.getDrawable(context, R.drawable.pill_oval);

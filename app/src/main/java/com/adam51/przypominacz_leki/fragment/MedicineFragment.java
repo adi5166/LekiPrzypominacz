@@ -31,6 +31,7 @@ public class MedicineFragment extends Fragment implements MedicineAdapter.OnPill
   private FragmentMedicineBinding medicineBinding;
   private MedicineAdapter medicineAdapter;
   private PillViewModel pillViewModel;
+  private NavController navController;
 
   public MedicineFragment() {
     // Required empty public constructor
@@ -47,6 +48,7 @@ public class MedicineFragment extends Fragment implements MedicineAdapter.OnPill
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
 
+    navController = Navigation.findNavController(view);
     medicineAdapter = new MedicineAdapter(this);
     // Add LayoutManager to xml
     //medicineBinding.medicineRecycle.setLayoutManager(new LinearLayoutManager(this.getContext()));
@@ -61,6 +63,12 @@ public class MedicineFragment extends Fragment implements MedicineAdapter.OnPill
         medicineAdapter.setPills(pills);
       }
     });
+    medicineBinding.pillButtonAdd.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        navController.navigate(MedicineFragmentDirections.addNewPill().setMode("Add").setToolbarName("Add Pill"));
+      }
+    });
   }
 
   @Override
@@ -71,7 +79,6 @@ public class MedicineFragment extends Fragment implements MedicineAdapter.OnPill
 
   @Override
   public void onPillClick(int position) {
-    NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
     Log.d(TAG, "onPillClick: clicked at "+position);
     navController.navigate(MedicineFragmentDirections.viewPillDetail(position));
   }

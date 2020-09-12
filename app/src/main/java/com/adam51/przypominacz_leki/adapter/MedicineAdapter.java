@@ -1,21 +1,15 @@
 package com.adam51.przypominacz_leki.adapter;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.adam51.przypominacz_leki.Util;
-import com.adam51.przypominacz_leki.activity.MainActivity;
 import com.adam51.przypominacz_leki.model.Pill;
-import com.adam51.przypominacz_leki.R;
 import com.adam51.przypominacz_leki.databinding.ItemPillBinding;
 
 
@@ -47,7 +41,7 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.Medici
     holder.itemBinding.medicineItemName.setText(currentPill.getName());
 
     Context context = holder.itemView.getContext();
-    Util.SetImageView(context, currentPill.getPicPath(), holder.itemBinding.medicineItemImage);
+    Util.SetPillImageView(context, currentPill.getPicPath(), holder.itemBinding.medicineItemImage);
     /*
     Drawable drawable;
 
