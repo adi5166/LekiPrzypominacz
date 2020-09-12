@@ -1,8 +1,11 @@
 package com.adam51.przypominacz_leki;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
@@ -71,4 +74,9 @@ public class Util {
     Can't use
     drawable = ResourcesCompat.getDrawable(Resources.getSystem(), R.drawable.pill_oval, null);
   */
+
+  public static void hideKeyboard(Context context, View view) {
+    InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+  }
 }

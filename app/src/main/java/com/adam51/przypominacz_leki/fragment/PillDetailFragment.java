@@ -68,6 +68,13 @@ public class PillDetailFragment extends Fragment {
       } else {
         //TODO zamienić z pozycji na obiekt Pill
         position = PillDetailFragmentArgs.fromBundle(getArguments()).getPillId();
+        Pill pill = PillDetailFragmentArgs.fromBundle(getArguments()).getPill();
+
+        detailPillBinding.pillDetailName.setText(pill.getName());
+        detailPillBinding.pillDetailDescription.setText(pill.getDescription());
+        Util.SetPillImageView(context, pill.getPicPath(), detailPillBinding.imageView);
+
+        /*
         pillViewModel.getAllPills().observe(getViewLifecycleOwner(), new Observer<List<Pill>>() {
           @Override
           public void onChanged(List<Pill> pills) {
@@ -78,6 +85,8 @@ public class PillDetailFragment extends Fragment {
             Util.SetPillImageView(context, pill.getPicPath(), detailPillBinding.imageView);
           }
         });
+
+         */
       }
     } catch (NullPointerException en) {
       Log.d(TAG, "NullPointerException at getAllPills");
@@ -95,25 +104,30 @@ public class PillDetailFragment extends Fragment {
 
   @Override
   public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-    switch (item.getItemId()) {
-      case R.id.menu_icon_pill_edit: {
-        int position = PillDetailFragmentArgs.fromBundle(getArguments()).getPillId();
-        navController.navigate(PillDetailFragmentDirections.actionEditPillFromDetail()
-                .setMode("Edit")
-                .setPillPosition(position)
-                .setToolbarName("Edit Pill"));
-        return true;
+    if (getArguments() != null) {
+      switch (item.getItemId()) {
+        case R.id.menu_icon_pill_edit: {
+          int position = PillDetailFragmentArgs.fromBundle(getArguments()).getPillId();
+          navController.navigate(PillDetailFragmentDirections.actionEditPillFromDetail(
+                  PillDetailFragmentArgs.fromBundle(getArguments()).getPill())
+                  .setMode("Edit")
+                  .setPillPosition(position)
+                  .setToolbarName("Edit Pill"));
+          return true;
+        }
+        case R.id.menu_icon_pill_delete: {
+          //int position = PillDetailFragmentArgs.fromBundle(getArguments()).getPillId();
+          //pillViewModel.delete(pillViewModel.getAllPills().getValue().get(position));
+          pillViewModel.delete(PillDetailFragmentArgs.fromBundle(getArguments()).getPill());
+          navController.navigate(PillDetailFragmentDirections.actionPillDetailFragmentToMedicineFragment());
+          Toast.makeText(getActivity(), "Pill deleted", Toast.LENGTH_SHORT).show();
+          return true;
+        }
+        default:
+          break;
       }
-      case R.id.menu_icon_pill_delete: {
-        int position = PillDetailFragmentArgs.fromBundle(getArguments()).getPillId();
-        pillViewModel.delete(pillViewModel.getAllPills().getValue().get(position));
-        navController.navigate(PillDetailFragmentDirections.actionPillDetailFragmentToMedicineFragment());
-        Toast.makeText(getActivity(), "Pill deleted", Toast.LENGTH_SHORT).show();
-        //delete
-        return true;
-      }
-      default:
-        break;
+    }else {
+      Toast.makeText(getActivity(), "Error with Pill", Toast.LENGTH_SHORT).show();
     }
     return false;
   }
