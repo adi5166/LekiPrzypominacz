@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.adam51.przypominacz_leki.Util;
+import com.adam51.przypominacz_leki.helper.Util;
 import com.adam51.przypominacz_leki.model.Pill;
 import com.adam51.przypominacz_leki.databinding.ItemPillBinding;
 

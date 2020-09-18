@@ -16,10 +16,34 @@ public class Pill implements Parcelable {
   private String description;
   private String picPath;
 
+
   public Pill(String name, String description, String picPath) {
     this.name = name;
     this.description = description;
     this.picPath = picPath;
+
+  }
+
+
+//TODO zmiana parcela
+  public void setId(int id) {
+    this.id = id;
+  }
+
+  public int getId() {
+    return id;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public String getPicPath() {
+    return picPath;
   }
 
   protected Pill(Parcel in) {
@@ -40,26 +64,6 @@ public class Pill implements Parcelable {
       return new Pill[size];
     }
   };
-
-  public void setId(int id) {
-    this.id = id;
-  }
-
-  public int getId() {
-    return id;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public String getDescription() {
-    return description;
-  }
-
-  public String getPicPath() {
-    return picPath;
-  }
 
   @Override
   public int describeContents() {

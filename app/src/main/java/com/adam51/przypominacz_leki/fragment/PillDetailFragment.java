@@ -14,20 +14,17 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.adam51.przypominacz_leki.R;
-import com.adam51.przypominacz_leki.Util;
+import com.adam51.przypominacz_leki.helper.Util;
 import com.adam51.przypominacz_leki.adapter.MedicineAdapter;
 import com.adam51.przypominacz_leki.databinding.FragmentDetailPillBinding;
 import com.adam51.przypominacz_leki.model.Pill;
+import com.adam51.przypominacz_leki.viewmodel.AlarmViewModel;
 import com.adam51.przypominacz_leki.viewmodel.PillViewModel;
-
-import java.util.List;
-import java.util.Objects;
 
 import static android.content.ContentValues.TAG;
 
@@ -118,7 +115,10 @@ public class PillDetailFragment extends Fragment {
         case R.id.menu_icon_pill_delete: {
           //int position = PillDetailFragmentArgs.fromBundle(getArguments()).getPillId();
           //pillViewModel.delete(pillViewModel.getAllPills().getValue().get(position));
-          pillViewModel.delete(PillDetailFragmentArgs.fromBundle(getArguments()).getPill());
+          Pill pill = AddEditPillFragmentArgs.fromBundle(getArguments()).getPill();
+          AlarmViewModel alarmViewModel = new ViewModelProvider(getActivity()).get(AlarmViewModel.class);
+          alarmViewModel.deleteAlarmFromPill(pill.getId());
+          pillViewModel.delete(pill);
           navController.navigate(PillDetailFragmentDirections.actionPillDetailFragmentToMedicineFragment());
           Toast.makeText(getActivity(), "Pill deleted", Toast.LENGTH_SHORT).show();
           return true;
@@ -126,7 +126,7 @@ public class PillDetailFragment extends Fragment {
         default:
           break;
       }
-    }else {
+    } else {
       Toast.makeText(getActivity(), "Error with Pill", Toast.LENGTH_SHORT).show();
     }
     return false;

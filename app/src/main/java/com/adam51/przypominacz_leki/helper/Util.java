@@ -1,4 +1,4 @@
-package com.adam51.przypominacz_leki;
+package com.adam51.przypominacz_leki.helper;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,6 +10,8 @@ import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+
+import com.adam51.przypominacz_leki.R;
 
 import static android.content.ContentValues.TAG;
 

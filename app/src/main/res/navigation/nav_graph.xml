@@ -27,11 +27,6 @@
       app:destination="@id/addEditPillFragment" />
   </fragment>
   <fragment
-    android:id="@+id/otherFragment"
-    android:name="com.adam51.przypominacz_leki.fragment.OtherFragment"
-    android:label="Other"
-    tools:layout="@layout/fragment_other" />
-  <fragment
     android:id="@+id/surveyFragment"
     android:name="com.adam51.przypominacz_leki.fragment.SurveyFragment"
     android:label="Survey"

@@ -13,8 +13,4 @@
     android:id="@+id/surveyFragment"
     android:icon="@drawable/ic_baseline_playlist_add_24"
     android:title="Survey" />
-  <item
-    android:id="@+id/otherFragment"
-    android:icon="@drawable/ic_baseline_notes_24"
-    android:title="Other" />
 </menu>
