@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/alarm_graph"
+  app:startDestination="@id/timePickerActivity">
+
+  <activity
+    android:id="@+id/timePickerActivity"
+    android:name="com.adam51.przypominacz_leki.activity.TimePickerActivity"
+    android:label="activity_time_picker"
+    tools:layout="@layout/activity_time_picker">
+    <action
+      android:id="@+id/action_back_to_medicine_fragment"
+      app:destination="@id/medicineFragment2" />
+  </activity>
+  <fragment
+    android:id="@+id/medicineFragment2"
+    android:name="com.adam51.przypominacz_leki.fragment.MedicineFragment"
+    android:label="fragment_medicine"
+    tools:layout="@layout/fragment_medicine" >
+  </fragment>
+</navigation>

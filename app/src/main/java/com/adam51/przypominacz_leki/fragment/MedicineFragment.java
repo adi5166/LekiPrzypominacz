@@ -66,10 +66,7 @@ public class MedicineFragment extends Fragment implements MedicineAdapter.OnPill
     medicineBinding.pillButtonAdd.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-
-        int amount = medicineAdapter.getItemCount();
-        pillViewModel.insert(new Pill("default", "default", "default"));
-        navController.navigate(MedicineFragmentDirections.addNewPill(null).setMode("Add").setToolbarName("Add Pill").setPillPosition(amount));
+        navController.navigate(MedicineFragmentDirections.addNewPill(null).setMode("Add").setToolbarName("Add Pill"));
       }
     });
   }
@@ -82,7 +79,7 @@ public class MedicineFragment extends Fragment implements MedicineAdapter.OnPill
 
   @Override
   public void onPillClick(int position) {
-    Log.d(TAG, "onPillClick: clicked at "+position);
+    Log.d(TAG, "onPillClick: clicked at " + position);
     navController.navigate(MedicineFragmentDirections.viewPillDetail(position, medicineAdapter.getPillAt(position)));
   }
 }

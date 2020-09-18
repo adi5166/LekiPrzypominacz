@@ -78,5 +78,13 @@
       android:name="pill"
       app:argType="com.adam51.przypominacz_leki.model.Pill"
       app:nullable="true" />
+    <action
+      android:id="@+id/action_addEditPillFragment_to_timePickerActivity2"
+      app:destination="@id/timePickerActivity2" />
   </fragment>
+  <activity
+    android:id="@+id/timePickerActivity2"
+    android:name="com.adam51.przypominacz_leki.activity.TimePickerActivity"
+    android:label="activity_time_picker"
+    tools:layout="@layout/activity_time_picker" />
 </navigation>

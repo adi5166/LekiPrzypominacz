@@ -29,6 +29,8 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.adam51.przypominacz_leki.R;
+import com.adam51.przypominacz_leki.activity.MainActivity;
+import com.adam51.przypominacz_leki.activity.TimePickerActivity;
 import com.adam51.przypominacz_leki.adapter.AlarmAdapter;
 import com.adam51.przypominacz_leki.helper.TimePickerFragment;
 import com.adam51.przypominacz_leki.helper.Util;
@@ -48,8 +50,7 @@ import java.util.List;
 import static android.content.ContentValues.TAG;
 import static com.adam51.przypominacz_leki.App.ALARM_EXTRA_STRING;
 
-public class AddEditPillFragment extends Fragment
-        implements TimePickerDialog.OnTimeSetListener, AlarmAdapter.OnAlarmListener {
+public class AddEditPillFragment extends Fragment {
 
   private FragmentAddEditPillBinding addEditPillBinding;
   private NavController navController;
@@ -57,12 +58,10 @@ public class AddEditPillFragment extends Fragment
   private ImagePillAdapter adapter;
   private PillViewModel pillViewModel;
   //private EditPillViewModel editPillViewModel;
-  private NotificationManagerCompat notificationManager;
+
   private AlarmViewModel alarmViewModel;
-  private AlarmAdapter alarmAdapter;
-  private boolean modeAlarm = false;
-  private int new_pill_id;
-  public static final int REQUEST_CODE = 11;
+  public static final String EXTRA_PILL = "com.adam51.pills";
+
 
   public AddEditPillFragment() {
     // Required empty public constructor
@@ -94,8 +93,6 @@ public class AddEditPillFragment extends Fragment
     adapter = new ImagePillAdapter(getActivity(), imagePillList);
     addEditPillBinding.spinnerPillAdd.setAdapter(adapter);
 
-    alarmAdapter = new AlarmAdapter(this);
-    addEditPillBinding.alarmRecycle.setAdapter(alarmAdapter);
 
     alarmViewModel = new ViewModelProvider(getActivity()).get(AlarmViewModel.class);
     //TODO zabieranie częsci alarmów z bazy danych
@@ -107,24 +104,13 @@ public class AddEditPillFragment extends Fragment
         else addEditPillBinding.radioGroupPill.setVisibility(View.GONE);
       }
     });
-    addEditPillBinding.switchPillHour.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-      @Override
-      public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        if (isChecked) {
-          addEditPillBinding.alarmAddButton.setVisibility(View.VISIBLE);
-          addEditPillBinding.alarmRecycle.setVisibility(View.VISIBLE);
-        } else {
-          addEditPillBinding.alarmAddButton.setVisibility(View.INVISIBLE);
-          addEditPillBinding.alarmRecycle.setVisibility(View.GONE);
-        }
-      }
-    });
 
     if (getArguments() != null) {
       String mode = AddEditPillFragmentArgs.fromBundle(getArguments()).getMode();
       if (mode.equals("Edit")) {
         addEditPillBinding.addPillButton.setVisibility(View.INVISIBLE);
         addEditPillBinding.editPillButton.setVisibility(View.VISIBLE);
+        addEditPillBinding.alarmAddButton.setVisibility(View.VISIBLE);
 
         final int position = AddEditPillFragmentArgs.fromBundle(getArguments()).getPillPosition();
         if (position != -5) {
@@ -135,47 +121,15 @@ public class AddEditPillFragment extends Fragment
           if (spinner_pos != -1) {
             addEditPillBinding.spinnerPillAdd.setSelection(spinner_pos);
           }
-
-          //TODO zastąpienie this getActivity()
-          notificationManager = NotificationManagerCompat.from(getActivity());
-          addEditPillBinding.alarmAddButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-              modeAlarm = false;
-              DialogFragment timePicker = new TimePickerFragment();
-              timePicker.show(getChildFragmentManager(), "time picker");
-            }
-          });
-
-          alarmViewModel.getAlarmFromPill(current_pill.getId()).observe(getViewLifecycleOwner(), new Observer<List<Alarm>>() {
-            @Override
-            public void onChanged(List<Alarm> alarms) {
-              alarmAdapter.setAlarms(alarms);
-              for (int i = 0; i < alarmAdapter.getItemCount(); i++) {
-                Alarm alarm = alarms.get(i);
-                if (alarm.isActive() && !alarm.isSetup()) {
-                  Log.d(TAG, "onChanged: on start");
-                  startAlarm(i);
-                  alarm.setSetup(true);
-                  alarmViewModel.update(alarm);
-                  break;
-                } else {
-                  if (!alarm.isActive() && alarm.isSetup()) {
-                    Log.d(TAG, "onChanged: on cancel");
-                    cancelAlarm(i);
-                    alarm.setSetup(false);
-                    alarmViewModel.update(alarm);
-                    break;
-                  }
-                }
-              }
-              //TODO update alarmów
-              Log.d(TAG, "onChanged: Update alarms ");
-
-            }
-          });
           //Util.SetPillImageView(getContext(), current_pill. ,addEditPillBinding.spinnerPillAdd);
         }
+
+        addEditPillBinding.alarmAddButton.setOnClickListener(new View.OnClickListener() {
+          @Override
+          public void onClick(View v) {
+            openAlarms();
+          }
+        });
 
         addEditPillBinding.editPillButton.setOnClickListener(new View.OnClickListener() {
           @Override
@@ -188,6 +142,7 @@ public class AddEditPillFragment extends Fragment
       } else if (mode.equals("Add")) {
         addEditPillBinding.addPillButton.setVisibility(View.VISIBLE);
         addEditPillBinding.editPillButton.setVisibility(View.INVISIBLE);
+        addEditPillBinding.alarmAddButton.setVisibility(View.INVISIBLE);
 
         addEditPillBinding.addPillButton.setOnClickListener(new View.OnClickListener() {
           @Override
@@ -196,28 +151,30 @@ public class AddEditPillFragment extends Fragment
             Util.hideKeyboard(getContext(), v);
           }
         });
-
-        final int position = AddEditPillFragmentArgs.fromBundle(getArguments()).getPillPosition();
-        if (position >= 0) {
-          Log.d(TAG, "onViewCreated: position: "+position);
-
-
-          addEditPillBinding.alarmAddButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-              new_pill_id = pillViewModel.getAllPills().getValue().get(position).getId();
-              modeAlarm = false;
-              DialogFragment timePicker = new TimePickerFragment();
-              timePicker.setTargetFragment(AddEditPillFragment.this,REQUEST_CODE);
-              timePicker.show(getChildFragmentManager(), "time picker");
-            }
-          });
-
-        }
-
         Log.d(TAG, "onViewCreated: Add mode");
       }
     }
+  }
+
+  public void openAlarms() {
+    if (getArguments() != null) {
+      Pill current_pill = AddEditPillFragmentArgs.fromBundle(getArguments()).getPill();
+      int pill_id = current_pill.getId();
+      if (pill_id != 0) {
+
+        Intent intent = new Intent(getActivity(), TimePickerActivity.class);
+        intent.putExtra(EXTRA_PILL, current_pill);
+        startActivity(intent);
+
+
+        //navController.navigate(AddEditPillFragmentDirections.actionAddEditPillFragmentToTimePickerActivity(current_pill));
+      }else {
+        Log.d(TAG, "openAlarms: problem with pill_id");
+      }
+    }else {
+      Log.d(TAG, "openAlarms: problem with arguments");
+    }
+
   }
 
   private int getSpinnerPosition(String string) {
@@ -243,6 +200,8 @@ public class AddEditPillFragment extends Fragment
                 addEditPillBinding.textInputDescription.getEditText().getText().toString(),
                 imagePill.getName()
         );
+
+
         pillViewModel.insert(pill);
         //TODO czy tu mam id pill do Alarmu?
 
@@ -342,115 +301,7 @@ public class AddEditPillFragment extends Fragment
   }
 
 
-  @Override
-  public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-    if (modeAlarm) {
-      int position = Integer.parseInt(addEditPillBinding.alarmTextPosition.getText().toString());
-      Alarm current_alarm = alarmAdapter.getAlarmAt(position);
-      int pill_id;
-      if (getArguments() != null) {
-        pill_id = AddEditPillFragmentArgs.fromBundle(getArguments()).getPill().getId();
-      } else pill_id = -4;
-
-      Alarm alarm = new Alarm(pill_id, hourOfDay, minute, current_alarm.isActive(), false);
-      alarm.setId(current_alarm.getId());
-      alarmViewModel.update(alarm);
-      cancelAlarm(position);
-      Log.d(TAG, "onTimeSet: Edit alarm");
-
-
-    } else {
-      int pill_id;
-      if (getArguments() != null) {
-        if ("Add".equals(AddEditPillFragmentArgs.fromBundle(getArguments()).getMode())) {
-          pill_id = new_pill_id;
-        } else {
-          pill_id = AddEditPillFragmentArgs.fromBundle(getArguments()).getPill().getId();
-        }
-      } else pill_id = -4;
-      //Dodana linia
-      Alarm alarm = new Alarm(pill_id, hourOfDay, minute, true, false);
-      alarmViewModel.insert(alarm);
-      //startAlarm(adapter.getItemCount());
-      Log.d(TAG, "onTimeSet: Add alarm");
-    }
-  }
-
-  private void startAlarm(int position) {
-    Log.d(TAG, "startAlarm: fun");
-    AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-    Intent intent = new Intent(getActivity(), AlarmReceiver.class);
-    intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-
-    Alarm alarm = alarmAdapter.getAlarmAt(position);
-    long ll = 23;
-    int id = alarm.getId();
-    if (id != 0) {
-      intent.putExtra(ALARM_EXTRA_STRING, id);
-    }
-    PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), id, intent, 0);
-
-    Calendar calendar = Calendar.getInstance();
-    calendar.setTimeInMillis(System.currentTimeMillis());
-    calendar.set(Calendar.HOUR_OF_DAY, alarm.getHour());
-    calendar.set(Calendar.MINUTE, alarm.getMinute());
-    calendar.set(Calendar.SECOND, 0);
-
-    if (calendar.before(Calendar.getInstance())) {
-      calendar.add(Calendar.DATE, 1);
-    }
-
-    alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-  }
-
-  private void cancelAlarm(int position) {
-    Log.d(TAG, "cancelAlarm: fun");
-    //TODO dodanie getActivity()
-    AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-    Intent intent = new Intent(getActivity(), AlarmReceiver.class);
-    intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-
-    Alarm alarm = alarmAdapter.getAlarmAt(position);
-    int id = alarm.getId();
-    if (id != 0) {
-      intent.putExtra(ALARM_EXTRA_STRING, id);
-    }
-    //getContext() zamist this
-    PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), id, intent, 0);
-
-    Calendar calendar = Calendar.getInstance();
-    calendar.setTimeInMillis(System.currentTimeMillis());
-    calendar.set(Calendar.HOUR_OF_DAY, alarm.getHour());
-    calendar.set(Calendar.MINUTE, alarm.getMinute());
-    calendar.set(Calendar.SECOND, 0);
-    calendar.set(Calendar.DAY_OF_WEEK, 4);
-
-    alarmManager.cancel(pendingIntent);
-  }
-
-  @Override
-  public void onAlarmClick(int position) {
-    Alarm current_alarm = alarmAdapter.getAlarmAt(position);
-    modeAlarm = true;
-    addEditPillBinding.alarmTextPosition.setText(String.valueOf(position));
-    DialogFragment timePicker = new TimePickerFragment(current_alarm.getHour(), current_alarm.getMinute());
-    timePicker.show(getActivity().getSupportFragmentManager(), "time picker");
-  }
-
-  @Override
-  public void onAlarmSwitchClick(int position, boolean active) {
-    Alarm current_alarm = alarmAdapter.getAlarmAt(position);
-
-    Alarm alarm = new Alarm(current_alarm.getPill_id(), current_alarm.getHour(), current_alarm.getMinute(), active, current_alarm.isSetup());
-    alarm.setId(current_alarm.getId());
-    alarmViewModel.update(alarm);
-  }
-
-  @Override
-  public void onDeleteAlarmClick(int position) {
-    alarmViewModel.delete(alarmAdapter.getAlarmAt(position));
-  }
-
+  /*
   @Override
   public void onDestroyView() {
     super.onDestroyView();
@@ -464,5 +315,5 @@ public class AddEditPillFragment extends Fragment
       }
     }
 
-  }
+  }*/
 }

@@ -25,7 +25,6 @@ public class Pill implements Parcelable {
   }
 
 
-//TODO zmiana parcela
   public void setId(int id) {
     this.id = id;
   }
