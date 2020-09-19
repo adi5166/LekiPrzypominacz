@@ -1,6 +1,7 @@
 package com.adam51.przypominacz_leki.viewmodel;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -10,6 +11,8 @@ import com.adam51.przypominacz_leki.model.Pill;
 import com.adam51.przypominacz_leki.repo.PillRepository;
 
 import java.util.List;
+
+import static android.content.ContentValues.TAG;
 
 public class PillViewModel extends AndroidViewModel {
   private PillRepository repository;
@@ -30,6 +33,7 @@ public class PillViewModel extends AndroidViewModel {
   }
 
   public void delete(Pill pill) {
+    Log.d(TAG, "delete: pill: "+pill.getId());
     repository.delete(pill);
   }
 

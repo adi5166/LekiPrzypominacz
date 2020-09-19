@@ -32,6 +32,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import static android.content.ContentValues.TAG;
+import static com.adam51.przypominacz_leki.App.ALARM_EXTRA_INT;
 import static com.adam51.przypominacz_leki.App.ALARM_EXTRA_STRING;
 
 public class TimePickerActivity extends AppCompatActivity
@@ -58,7 +59,7 @@ public class TimePickerActivity extends AppCompatActivity
     binding.alarmRecycle.setAdapter(alarmAdapter);
 
     alarmViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(this.getApplication())).get(AlarmViewModel.class);
-    alarmViewModel.getAllAlarms().observe(this, new Observer<List<Alarm>>() {
+    alarmViewModel.getAlarmFromPill(current_pill.getId()).observe(this, new Observer<List<Alarm>>() {
       @Override
       public void onChanged(List<Alarm> alarms) {
         alarmAdapter.setAlarms(alarms);
@@ -142,10 +143,10 @@ public class TimePickerActivity extends AppCompatActivity
     intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
     Alarm alarm = alarmAdapter.getAlarmAt(position);
-    long ll = 23;
     int id = alarm.getId();
     if (id != 0) {
-      intent.putExtra(ALARM_EXTRA_STRING, id);
+      intent.putExtra(ALARM_EXTRA_STRING, current_pill.getName());
+      intent.putExtra(ALARM_EXTRA_INT, id);
     }
     PendingIntent pendingIntent = PendingIntent.getBroadcast(this, id, intent, 0);
 

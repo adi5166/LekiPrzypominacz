@@ -9,11 +9,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -22,9 +24,12 @@ import com.adam51.przypominacz_leki.R;
 import com.adam51.przypominacz_leki.helper.Util;
 import com.adam51.przypominacz_leki.adapter.MedicineAdapter;
 import com.adam51.przypominacz_leki.databinding.FragmentDetailPillBinding;
+import com.adam51.przypominacz_leki.model.Alarm;
 import com.adam51.przypominacz_leki.model.Pill;
 import com.adam51.przypominacz_leki.viewmodel.AlarmViewModel;
 import com.adam51.przypominacz_leki.viewmodel.PillViewModel;
+
+import java.util.List;
 
 import static android.content.ContentValues.TAG;
 
@@ -56,20 +61,46 @@ public class PillDetailFragment extends Fragment {
     navController = Navigation.findNavController(view);
     setHasOptionsMenu(true);
 
-    try {
-      final Context context = getContext();
-      final int position;
-      if (getArguments() == null) {
-        navController.navigate(PillDetailFragmentDirections.actionPillDetailFragmentToMedicineFragment());
-        Toast.makeText(getContext(), R.string.error_get_pill_detail, Toast.LENGTH_SHORT).show();
-      } else {
-        //TODO zamienić z pozycji na obiekt Pill
-        position = PillDetailFragmentArgs.fromBundle(getArguments()).getPillId();
-        Pill pill = PillDetailFragmentArgs.fromBundle(getArguments()).getPill();
 
-        detailPillBinding.pillDetailName.setText(pill.getName());
-        detailPillBinding.pillDetailDescription.setText(pill.getDescription());
-        Util.SetPillImageView(context, pill.getPicPath(), detailPillBinding.imageView);
+    final Context context = getContext();
+    final int position;
+    if (getArguments() == null) {
+      navController.navigate(PillDetailFragmentDirections.actionPillDetailFragmentToMedicineFragment());
+      Toast.makeText(getContext(), R.string.error_get_pill_detail, Toast.LENGTH_SHORT).show();
+    } else {
+      //TODO zamienić z pozycji na obiekt Pill
+      position = PillDetailFragmentArgs.fromBundle(getArguments()).getPillId();
+      Pill pill = PillDetailFragmentArgs.fromBundle(getArguments()).getPill();
+
+      detailPillBinding.pillDetailName.setText(pill.getName());
+      detailPillBinding.pillDetailDescription.setText(pill.getDescription());
+      Log.d(TAG, "onViewCreated: befor radio");
+      String meal;
+      switch (pill.getRadioId()) {
+        case R.id.radio_pill_anytime: {
+          meal = "Anytime";
+          break;
+        }
+        case R.id.radio_pill_before: {
+          meal = "Before meal";
+          break;
+        }
+        case R.id.radio_pill_at: {
+          meal = "At meal";
+          break;
+        }
+        case R.id.radio_pill_after: {
+          meal = "After meal";
+          break;
+        }
+        default:
+          meal = "Any time";
+      }
+      Log.d(TAG, "onViewCreated: after radio 0");
+      detailPillBinding.detailPillMeal.setText(meal);
+      Log.d(TAG, "onViewCreated: after radio set 1");
+
+      Util.SetPillImageView(context, pill.getPicPath(), detailPillBinding.imageView);
 
         /*
         pillViewModel.getAllPills().observe(getViewLifecycleOwner(), new Observer<List<Pill>>() {
@@ -84,12 +115,14 @@ public class PillDetailFragment extends Fragment {
         });
 
          */
-      }
+    }
+      /*
     } catch (NullPointerException en) {
       Log.d(TAG, "NullPointerException at getAllPills");
       navController.navigate(PillDetailFragmentDirections.actionPillDetailFragmentToMedicineFragment());
       Toast.makeText(getContext(), R.string.error_get_pill_detail, Toast.LENGTH_SHORT).show();
     }
+    */
   }
 
   @Override
@@ -116,9 +149,19 @@ public class PillDetailFragment extends Fragment {
           //int position = PillDetailFragmentArgs.fromBundle(getArguments()).getPillId();
           //pillViewModel.delete(pillViewModel.getAllPills().getValue().get(position));
           Pill pill = AddEditPillFragmentArgs.fromBundle(getArguments()).getPill();
-          AlarmViewModel alarmViewModel = new ViewModelProvider(getActivity()).get(AlarmViewModel.class);
-          alarmViewModel.deleteAlarmFromPill(pill.getId());
+          final AlarmViewModel alarmViewModel = new ViewModelProvider(getActivity()).get(AlarmViewModel.class);
+          alarmViewModel.getAlarmFromPill(pill.getId()).observe(getViewLifecycleOwner(), new Observer<List<Alarm>>() {
+            @Override
+            public void onChanged(List<Alarm> alarms) {
+              if (!alarms.isEmpty()) {
+                Alarm alarm = alarms.get(0);
+                alarmViewModel.delete(alarm);
+              }
+            }
+          });
+
           pillViewModel.delete(pill);
+
           navController.navigate(PillDetailFragmentDirections.actionPillDetailFragmentToMedicineFragment());
           Toast.makeText(getActivity(), "Pill deleted", Toast.LENGTH_SHORT).show();
           return true;

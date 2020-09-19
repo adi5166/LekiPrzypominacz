@@ -3,31 +3,28 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  android:padding="16dp"
-  tools:context=".fragment.HomeFragment">
+  android:layout_height="wrap_content"
+  android:padding="8dp">
 
   <TextView
-    android:id="@+id/home_fragment_text"
+    android:id="@+id/home_time_text"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginStart="24dp"
-    android:text="All Alarms"
-    android:textColor="@color/colorPrimary"
+    android:text="10:12"
+    android:layout_marginLeft="16dp"
     android:textAppearance="@style/TextAppearance.AppCompat.Large"
+    app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent" />
 
-  <androidx.recyclerview.widget.RecyclerView
-    android:id="@+id/recyclerHome"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginTop="36dp"
-    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+  <TextView
+    android:id="@+id/home_pill_name_text"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="96dp"
+    android:text="Pill Name"
+    android:textAppearance="@style/TextAppearance.AppCompat.Large"
     app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    tools:listitem="@layout/item_home"/>
-
+    app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

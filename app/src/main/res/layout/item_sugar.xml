@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:paddingHorizontal="16dp"
+  android:paddingVertical="8dp">
+
+  <TextView
+    android:id="@+id/item_sugar_quantity"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="112"
+    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
+
+
+  <TextView
+    android:id="@+id/item_sugar_description"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:text="Description"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toStartOf="@+id/item_sugar_time"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/item_sugar_quantity" />
+
+  <TextView
+    android:id="@+id/item_sugar_time"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="23.08, 11:08"
+    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+    app:layout_constraintBottom_toBottomOf="@+id/item_sugar_quantity"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -30,6 +30,10 @@ public class AlarmRepository {
     new UpdateAlarmAsyncTask(alarmDao).execute(alarm);
   }
 
+  public void unSetupAllAlarms(boolean setup) {
+    new UnSetupAllAlarmsAsyncTask(alarmDao).execute(setup);
+  }
+
   public void delete(Alarm alarm) {
     new DeleteAlarmAsyncTask(alarmDao).execute(alarm);
   }
@@ -43,10 +47,19 @@ public class AlarmRepository {
   }
 
   public LiveData<List<Alarm>> getAlarmFromPill(int pill_id) {
-
     LiveData<List<Alarm>> alarms = null;
     try {
       alarms = new GetAlarmFromPillAsyncTask(alarmDao).execute(pill_id).get();
+    } catch (ExecutionException | InterruptedException e) {
+      e.printStackTrace();
+    }
+    return alarms;
+  }
+
+  public LiveData<List<Alarm>> getActiveAlarms(boolean active) {
+    LiveData<List<Alarm>> alarms = null;
+    try {
+      alarms = new GetActiveAlarmsAsyncTask(alarmDao).execute(active).get();
     } catch (ExecutionException | InterruptedException e) {
       e.printStackTrace();
     }
@@ -81,6 +94,20 @@ public class AlarmRepository {
     @Override
     protected Void doInBackground(Alarm... alarms) {
       alarmDao.update(alarms[0]);
+      return null;
+    }
+  }
+
+  private static class UnSetupAllAlarmsAsyncTask extends AsyncTask<Boolean, Void, Void> {
+    private AlarmDao alarmDao;
+
+    public UnSetupAllAlarmsAsyncTask(AlarmDao alarmDao) {
+      this.alarmDao = alarmDao;
+    }
+
+    @Override
+    protected Void doInBackground(Boolean... booleans) {
+      alarmDao.unSetupAllAlarms(booleans[0]);
       return null;
     }
   }
@@ -124,6 +151,24 @@ public class AlarmRepository {
     protected Void doInBackground(Void... voids) {
       alarmDao.deleteAllAlarm();
       return null;
+    }
+  }
+
+  private static class GetActiveAlarmsAsyncTask extends AsyncTask<Boolean, Void, LiveData<List<Alarm>>> {
+    private AlarmDao alarmDao;
+
+    public GetActiveAlarmsAsyncTask(AlarmDao alarmDao) {
+      this.alarmDao = alarmDao;
+    }
+
+    @Override
+    protected LiveData<List<Alarm>> doInBackground(Boolean... booleans) {
+      return alarmDao.getActiveAlarms(booleans[0]);
+    }
+
+    @Override
+    protected void onPostExecute(LiveData<List<Alarm>> listLiveData) {
+      super.onPostExecute(listLiveData);
     }
   }
 

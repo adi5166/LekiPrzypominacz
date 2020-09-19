@@ -2,6 +2,7 @@ package com.adam51.przypominacz_leki.repo;
 
 import android.app.Application;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
@@ -10,6 +11,8 @@ import com.adam51.przypominacz_leki.dao.PillDao;
 import com.adam51.przypominacz_leki.database.PillDatabase;
 
 import java.util.List;
+
+import static android.content.ContentValues.TAG;
 
 public class PillRepository {
   private PillDao pillDao;
@@ -79,6 +82,7 @@ public class PillRepository {
     @Override
     protected Void doInBackground(Pill... pills) {
       pillDao.delete(pills[0]);
+      Log.d(TAG, "doInBackground: pill deleted"+pills[0].getId());
       return null;
     }
   }

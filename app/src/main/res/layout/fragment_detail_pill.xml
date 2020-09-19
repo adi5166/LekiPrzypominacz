@@ -4,7 +4,8 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
-  android:layout_height="match_parent">
+  android:layout_height="match_parent"
+  >
 
   <ImageView
     android:id="@+id/imageView"
@@ -23,6 +24,7 @@
     android:layout_marginStart="8dp"
     android:layout_marginEnd="16dp"
     android:text="Pill Name"
+    android:textAppearance="@style/TextAppearance.AppCompat.Large"
     app:layout_constraintBottom_toBottomOf="@+id/imageView"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toEndOf="@+id/imageView"
@@ -36,23 +38,49 @@
     app:layout_constraintGuide_begin="100dp" />
 
   <TextView
-    android:id="@+id/pillDetailDescription"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="16dp"
-    android:layout_marginTop="8dp"
-    android:text="Description Pill"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/detailPillDescriptionText" />
-
-  <TextView
     android:id="@+id/detailPillDescriptionText"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginStart="16dp"
     android:layout_marginTop="16dp"
     android:text="Description"
+    android:textAppearance="@style/TextAppearance.AppCompat.Large"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="@+id/guidelineDetailPill" />
+
+  <TextView
+    android:id="@+id/pillDetailDescription"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="8dp"
+    android:text="Description Pill"
+    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/detailPillDescriptionText" />
+
+  <TextView
+    android:id="@+id/detailPillMealText"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="16dp"
+    android:text="Pill with meal"
+    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/pillDetailDescription" />
+
+  <TextView
+    android:id="@+id/detailPillMeal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="8dp"
+    android:text="pill"
+    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/detailPillMealText" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

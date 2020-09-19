@@ -15,18 +15,42 @@ public class Pill implements Parcelable {
   private String name;
   private String description;
   private String picPath;
+  private int radioId;
 
 
-  public Pill(String name, String description, String picPath) {
+  public Pill(String name, String description, String picPath, int radioId) {
     this.name = name;
     this.description = description;
     this.picPath = picPath;
-
+    this.radioId = radioId;
   }
 
+  protected Pill(Parcel in) {
+    id = in.readInt();
+    name = in.readString();
+    description = in.readString();
+    picPath = in.readString();
+    radioId = in.readInt();
+  }
+
+  public static final Creator<Pill> CREATOR = new Creator<Pill>() {
+    @Override
+    public Pill createFromParcel(Parcel in) {
+      return new Pill(in);
+    }
+
+    @Override
+    public Pill[] newArray(int size) {
+      return new Pill[size];
+    }
+  };
 
   public void setId(int id) {
     this.id = id;
+  }
+
+  public void setRadioId(int radioId) {
+    this.radioId = radioId;
   }
 
   public int getId() {
@@ -45,24 +69,9 @@ public class Pill implements Parcelable {
     return picPath;
   }
 
-  protected Pill(Parcel in) {
-    id = in.readInt();
-    name = in.readString();
-    description = in.readString();
-    picPath = in.readString();
+  public int getRadioId() {
+    return radioId;
   }
-
-  public static final Creator<Pill> CREATOR = new Creator<Pill>() {
-    @Override
-    public Pill createFromParcel(Parcel in) {
-      return new Pill(in);
-    }
-
-    @Override
-    public Pill[] newArray(int size) {
-      return new Pill[size];
-    }
-  };
 
   @Override
   public int describeContents() {
@@ -75,5 +84,6 @@ public class Pill implements Parcelable {
     dest.writeString(name);
     dest.writeString(description);
     dest.writeString(picPath);
+    dest.writeInt(radioId);
   }
 }

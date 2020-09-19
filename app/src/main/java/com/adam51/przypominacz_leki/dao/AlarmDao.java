@@ -15,7 +15,7 @@ import java.util.List;
 public interface AlarmDao {
 
   @Insert
-  void insert (Alarm alarm);
+  void insert(Alarm alarm);
 
   @Update
   void update(Alarm alarm);
@@ -29,7 +29,13 @@ public interface AlarmDao {
   @Query("DELETE FROM alarm_table WHERE pill_id = :pill_id")
   void deleteAlarmFromPill(int pill_id);
 
-  @Query("SELECT * FROM alarm_table WHERE pill_id =:pill_id")
+  @Query("SELECT * FROM alarm_table WHERE active =:active")
+  LiveData<List<Alarm>> getActiveAlarms(boolean active);
+
+  @Query("UPDATE alarm_table SET setup =:setup")
+  void unSetupAllAlarms(boolean setup);
+
+  @Query("SELECT * FROM alarm_table WHERE pill_id =:pill_id ORDER BY hour ASC, minute ASC ")
   LiveData<List<Alarm>> getAlarmFromPill(int pill_id);
 
   @Query("SELECT * FROM alarm_table")

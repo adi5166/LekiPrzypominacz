@@ -1,16 +1,10 @@
 package com.adam51.przypominacz_leki.fragment;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.NotificationManagerCompat;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -25,30 +19,24 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
-import android.widget.TimePicker;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.adam51.przypominacz_leki.R;
-import com.adam51.przypominacz_leki.activity.MainActivity;
 import com.adam51.przypominacz_leki.activity.TimePickerActivity;
-import com.adam51.przypominacz_leki.adapter.AlarmAdapter;
-import com.adam51.przypominacz_leki.helper.TimePickerFragment;
 import com.adam51.przypominacz_leki.helper.Util;
 import com.adam51.przypominacz_leki.adapter.ImagePillAdapter;
 import com.adam51.przypominacz_leki.databinding.FragmentAddEditPillBinding;
 import com.adam51.przypominacz_leki.model.Alarm;
 import com.adam51.przypominacz_leki.model.ImagePill;
 import com.adam51.przypominacz_leki.model.Pill;
-import com.adam51.przypominacz_leki.receiver.AlarmReceiver;
 import com.adam51.przypominacz_leki.viewmodel.AlarmViewModel;
 import com.adam51.przypominacz_leki.viewmodel.PillViewModel;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import static android.content.ContentValues.TAG;
-import static com.adam51.przypominacz_leki.App.ALARM_EXTRA_STRING;
 
 public class AddEditPillFragment extends Fragment {
 
@@ -121,6 +109,7 @@ public class AddEditPillFragment extends Fragment {
           if (spinner_pos != -1) {
             addEditPillBinding.spinnerPillAdd.setSelection(spinner_pos);
           }
+          addEditPillBinding.radioGroupPill.check(current_pill.getRadioId());
           //Util.SetPillImageView(getContext(), current_pill. ,addEditPillBinding.spinnerPillAdd);
         }
 
@@ -168,10 +157,10 @@ public class AddEditPillFragment extends Fragment {
 
 
         //navController.navigate(AddEditPillFragmentDirections.actionAddEditPillFragmentToTimePickerActivity(current_pill));
-      }else {
+      } else {
         Log.d(TAG, "openAlarms: problem with pill_id");
       }
-    }else {
+    } else {
       Log.d(TAG, "openAlarms: problem with arguments");
     }
 
@@ -190,20 +179,25 @@ public class AddEditPillFragment extends Fragment {
     imagePillList.add(new ImagePill("pill_oval_blue", R.drawable.pill_oval_blue));
     imagePillList.add(new ImagePill("pill_oval_orange", R.drawable.pill_oval_orange));
     imagePillList.add(new ImagePill("pill_oval_green", R.drawable.pill_oval_green));
+    imagePillList.add(new ImagePill("pill_oval_red", R.drawable.pill_oval_red));
+    imagePillList.add(new ImagePill("pill_oval_violet", R.drawable.pill_oval_violet));
+    imagePillList.add(new ImagePill("pill_oval_yellow", R.drawable.pill_oval_yellow));
+    imagePillList.add(new ImagePill("pill_oval_lime", R.drawable.pill_oval_lime));
+    imagePillList.add(new ImagePill("pill_oval_pink", R.drawable.pill_oval_pink));
+    imagePillList.add(new ImagePill("pill_oval_brown", R.drawable.pill_oval_brown));
   }
 
   private void savePill() {
     try {
       if (isDataValid()) {
         ImagePill imagePill = (ImagePill) addEditPillBinding.spinnerPillAdd.getSelectedItem();
+        int radioId = addEditPillBinding.radioGroupPill.getCheckedRadioButtonId();
+
         Pill pill = new Pill(addEditPillBinding.textInputName.getEditText().getText().toString(),
                 addEditPillBinding.textInputDescription.getEditText().getText().toString(),
-                imagePill.getName()
-        );
-
-
+                imagePill.getName(),
+                radioId);
         pillViewModel.insert(pill);
-        //TODO czy tu mam id pill do Alarmu?
 
         Toast.makeText(getActivity(), "Pill saved", Toast.LENGTH_SHORT).show();
       } else {
@@ -221,11 +215,12 @@ public class AddEditPillFragment extends Fragment {
     if (isDataValid()) {
       if (getArguments() != null) {
         ImagePill imagePill = (ImagePill) addEditPillBinding.spinnerPillAdd.getSelectedItem();
+        int radioId = addEditPillBinding.radioGroupPill.getCheckedRadioButtonId();
 
         Pill pill = new Pill(addEditPillBinding.textInputName.getEditText().getText().toString(),
                 addEditPillBinding.textInputDescription.getEditText().getText().toString(),
-                imagePill.getName()
-        );
+                imagePill.getName(),
+                radioId);
         pill.setId(AddEditPillFragmentArgs.fromBundle(getArguments()).getPill().getId());
         pillViewModel.update(pill);
         Toast.makeText(getActivity(), "Pill updated", Toast.LENGTH_SHORT).show();
@@ -242,8 +237,28 @@ public class AddEditPillFragment extends Fragment {
   public void deletePill() {
     if (getArguments() != null) {
       Pill pill = AddEditPillFragmentArgs.fromBundle(getArguments()).getPill();
-      alarmViewModel.deleteAlarmFromPill(pill.getId());
+
+      alarmViewModel.getAlarmFromPill(pill.getId()).observe(getViewLifecycleOwner(), new Observer<List<Alarm>>() {
+        @Override
+        public void onChanged(List<Alarm> alarms) {
+          if (!alarms.isEmpty()) {
+            Alarm alarm = alarms.get(0);
+            alarmViewModel.delete(alarm);
+          }
+        }
+      });
+      /*
+      List<Alarm> alarmList = alarmViewModel.getAlarmFromPill(pill.getId()).getValue();
+      for (int i = 0; i < alarmList.size(); i++) {
+        Alarm alarm = alarmList.get(i);
+        alarmViewModel.delete(alarm);
+      }
+
+       */
+
+
       pillViewModel.delete(pill);
+
       navController.navigate(AddEditPillFragmentDirections.actionPillSavedBackToRecycler());
       Toast.makeText(getActivity(), "Pill deleted", Toast.LENGTH_SHORT).show();
     } else {

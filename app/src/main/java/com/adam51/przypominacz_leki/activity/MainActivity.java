@@ -12,6 +12,7 @@ import androidx.navigation.ui.NavigationUI;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.adam51.przypominacz_leki.R;
@@ -37,8 +38,13 @@ public class MainActivity extends AppCompatActivity {
     navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
       @Override
       public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
-        if (destination.getId() == R.id.pillDetailFragment ||
-                destination.getId() == R.id.addEditPillFragment) {
+        if (destination.getId() == R.id.pillDetailFragment
+                || destination.getId() == R.id.addEditPillFragment
+                || destination.getId() == R.id.settings
+                || destination.getId() == R.id.addSugarFragment
+                || destination.getId() == R.id.sugarFragment
+
+        ) {
           mainBinding.bottomNavigationView.setVisibility(View.GONE);
           //getActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
         } else {
@@ -57,6 +63,14 @@ public class MainActivity extends AppCompatActivity {
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.toolbar_menu, menu);
     return true;
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    if (item.getItemId() == R.id.settings) {
+      navController.navigate(R.id.settingsFragment);
+      return true;
+    } else return false;
   }
 
   @Override
