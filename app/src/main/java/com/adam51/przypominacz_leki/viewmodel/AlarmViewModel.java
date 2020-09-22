@@ -22,6 +22,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import static android.content.ContentValues.TAG;
+import static com.adam51.przypominacz_leki.App.ALARM_EXTRA_COLOR;
 import static com.adam51.przypominacz_leki.App.ALARM_EXTRA_INT;
 import static com.adam51.przypominacz_leki.App.ALARM_EXTRA_STRING;
 
@@ -85,7 +86,7 @@ public class AlarmViewModel extends AndroidViewModel {
     repository.deleteAlarmFromPill(pill_id);
   }
    */
-  public void cancelAlarmFromPill(final int pill_id, final String pill_name) {
+  public void cancelAlarmFromPill(final int pill_id, final String pill_name, final String color) {
     final AlarmManager alarmManager = (AlarmManager) getApplication().getSystemService(Context.ALARM_SERVICE);
     final Intent intent = new Intent(getApplication(), AlarmReceiver.class);
     intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -97,6 +98,7 @@ public class AlarmViewModel extends AndroidViewModel {
           if (alarms.get(i).getPill_id() == pill_id) {
 
             intent.putExtra(ALARM_EXTRA_STRING, pill_name);
+            intent.putExtra(ALARM_EXTRA_COLOR, color);
             intent.putExtra(ALARM_EXTRA_INT, alarms.get(i).getId());
             PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplication(), alarms.get(i).getId(), intent, 0);
             alarmManager.cancel(pendingIntent);
@@ -107,7 +109,7 @@ public class AlarmViewModel extends AndroidViewModel {
     allAlarms.observeForever(observer);
   }
 
-  public void startAlarmFromPill(final int pill_id, final String pill_name) {
+  public void startAlarmFromPill(final int pill_id, final String pill_name, final String color) {
     final AlarmManager alarmManager = (AlarmManager) getApplication().getSystemService(Context.ALARM_SERVICE);
     final Intent intent = new Intent(getApplication(), AlarmReceiver.class);
     intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -118,6 +120,7 @@ public class AlarmViewModel extends AndroidViewModel {
         for (int i = 0; i < alarms.size(); i++) {
           if (alarms.get(i).getPill_id() == pill_id) {
 
+            intent.putExtra(ALARM_EXTRA_COLOR, color);
             intent.putExtra(ALARM_EXTRA_STRING, pill_name);
             intent.putExtra(ALARM_EXTRA_INT, alarms.get(i).getId());
             PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplication(), alarms.get(i).getId(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -165,7 +168,7 @@ public class AlarmViewModel extends AndroidViewModel {
     new DeleteAlarmAsyncTask(repository).execute(pill_id);
   }
 
-  public void updateAlarmFromPill(final int pill_id, final String pill_name) {
+  public void updateAlarmFromPill(final int pill_id, final String pill_name, final String color) {
     final AlarmManager alarmManager = (AlarmManager) getApplication().getSystemService(Context.ALARM_SERVICE);
     final Intent intent = new Intent(getApplication(), AlarmReceiver.class);
     intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -176,6 +179,7 @@ public class AlarmViewModel extends AndroidViewModel {
         for (int i = 0; i < alarms.size(); i++) {
           if (alarms.get(i).getPill_id() == pill_id && alarms.get(i).isActive()) {
 
+            intent.putExtra(ALARM_EXTRA_COLOR, color);
             intent.putExtra(ALARM_EXTRA_STRING, pill_name);
             intent.putExtra(ALARM_EXTRA_INT, alarms.get(i).getId());
             PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplication(), alarms.get(i).getId(), intent, PendingIntent.FLAG_CANCEL_CURRENT);

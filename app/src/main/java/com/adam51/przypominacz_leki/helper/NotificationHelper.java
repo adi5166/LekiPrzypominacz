@@ -9,6 +9,8 @@ import android.graphics.Color;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import com.adam51.przypominacz_leki.R;
+import com.adam51.przypominacz_leki.R.color;
 import com.adam51.przypominacz_leki.R.drawable;
 import com.adam51.przypominacz_leki.activity.MainActivity;
 
@@ -35,7 +37,7 @@ public class NotificationHelper extends ContextWrapper {
             .setSmallIcon(drawable.ic_icon);
   }
 
-  public NotificationCompat.Builder getChannelNotification(String title, String text) {
+  public NotificationCompat.Builder getChannelNotification(String title, String text, String color) {
     Intent resultIntent = new Intent(this, MainActivity.class);
     PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 1, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -46,7 +48,7 @@ public class NotificationHelper extends ContextWrapper {
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(resultPendingIntent)
             .setAutoCancel(true)
-            .setColor(Color.BLUE);
+            .setColor(getResources().getColor(Util.getColor(color)));
   }
 }
 

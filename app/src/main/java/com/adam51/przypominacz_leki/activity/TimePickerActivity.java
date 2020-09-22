@@ -32,6 +32,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import static android.content.ContentValues.TAG;
+import static com.adam51.przypominacz_leki.App.ALARM_EXTRA_COLOR;
 import static com.adam51.przypominacz_leki.App.ALARM_EXTRA_INT;
 import static com.adam51.przypominacz_leki.App.ALARM_EXTRA_STRING;
 
@@ -132,6 +133,7 @@ public class TimePickerActivity extends AppCompatActivity
     Alarm alarm = alarmAdapter.getAlarmAt(position);
     int id = alarm.getId();
     if (id != 0) {
+      intent.putExtra(ALARM_EXTRA_COLOR, current_pill.getPicPath());
       intent.putExtra(ALARM_EXTRA_STRING, current_pill.getName());
       intent.putExtra(ALARM_EXTRA_INT, id);
     }
@@ -161,6 +163,7 @@ public class TimePickerActivity extends AppCompatActivity
     Alarm alarm = alarmAdapter.getAlarmAt(position);
     int id = alarm.getId();
     if (id != 0) {
+      intent.putExtra(ALARM_EXTRA_COLOR, current_pill.getPicPath());
       intent.putExtra(ALARM_EXTRA_STRING, id);
       intent.putExtra(ALARM_EXTRA_STRING, current_pill.getName());
     }

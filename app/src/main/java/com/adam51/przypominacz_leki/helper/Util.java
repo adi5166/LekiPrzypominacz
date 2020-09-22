@@ -2,6 +2,7 @@ package com.adam51.przypominacz_leki.helper;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.View;
@@ -95,6 +96,40 @@ public class Util {
     Can't use
     drawable = ResourcesCompat.getDrawable(Resources.getSystem(), R.drawable.pill_oval, null);
   */
+
+  public static int getColor(String picPath) {
+    int color = Color.BLUE;
+    switch (picPath) {
+      case "pill_oval_orange":
+        color = R.color.oval_orange;
+        break;
+      case "pill_oval_blue":
+        color = R.color.oval_blue;
+        break;
+      case "pill_oval_green":
+        color = R.color.oval_green;
+        break;
+      case "pill_oval_red":
+        color = R.color.oval_red;
+        break;
+      case "pill_oval_violet":
+        color = R.color.oavl_violet;
+        break;
+      case "pill_oval_yellow":
+        color = R.color.oval_yellow;
+        break;
+      case "pill_oval_lime":
+        color = R.color.oval_lime;
+        break;
+      case "pill_oval_pink":
+        color = R.color.oval_pink;
+        break;
+      case "pill_oval_brown":
+        color = R.color.oval_brown;
+        break;
+    }
+    return color;
+  }
 
   public static void hideKeyboard(Context context, View view) {
     InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);

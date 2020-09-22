@@ -18,6 +18,7 @@ public class App extends Application {
   public static final String ALARM_ACTION = "com.adam51.ALARM_ACTION";
   public static final String ALARM_EXTRA_STRING = "com.adam51.EXTRA_STRING";
   public static final String ALARM_EXTRA_INT = "com.adam51.EXTRA_INT";
+  public static final String ALARM_EXTRA_COLOR = "com.adam51.EXTRA_COLOR";
   public static final String CHANNEL_ID = "notification";
   private NotificationManagerCompat notificationManager;
 

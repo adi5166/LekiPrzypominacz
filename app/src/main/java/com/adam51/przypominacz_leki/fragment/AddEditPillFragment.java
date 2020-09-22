@@ -247,7 +247,8 @@ public class AddEditPillFragment extends Fragment {
         pillViewModel.update(pill);
         //alarmViewModel.cancelAlarmFromPill(AddEditPillFragmentArgs.fromBundle(getArguments()).getPill().getId());
         alarmViewModel.updateAlarmFromPill(AddEditPillFragmentArgs.fromBundle(getArguments()).getPill().getId(),
-               pill.getName());
+                pill.getName(),
+                pill.getPicPath());
 
         /*
         List<Alarm> alarmList = alarmViewModel.getAlarmFromPill(pill.getId()).getValue();,

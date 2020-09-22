@@ -19,8 +19,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.adam51.przypominacz_leki.R;
-import com.adam51.przypominacz_leki.adapter.AlarmAdapter;
 import com.adam51.przypominacz_leki.adapter.HomeAdapter;
 import com.adam51.przypominacz_leki.databinding.FragmentHomeBinding;
 import com.adam51.przypominacz_leki.model.Alarm;
@@ -73,7 +71,7 @@ public class HomeFragment extends Fragment {
         homeAdapter.setPillList(pills);
         for (Pill pill : pills
         ) {
-          alarmViewModel.updateAlarmFromPill(pill.getId(), pill.getName());
+          alarmViewModel.updateAlarmFromPill(pill.getId(), pill.getName(), pill.getPicPath());
           //setAlarm(true) -> update
         }
       }
