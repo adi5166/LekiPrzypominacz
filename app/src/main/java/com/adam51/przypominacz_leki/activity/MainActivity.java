@@ -2,12 +2,14 @@ package com.adam51.przypominacz_leki.activity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import android.os.Bundle;
@@ -34,8 +36,12 @@ public class MainActivity extends AppCompatActivity {
     mainBinding = ActivityMainBinding.inflate(getLayoutInflater());
     setContentView(mainBinding.getRoot());
 
-    BottomNavigationView bottomNavigationView = mainBinding.bottomNavigationView;
+    final BottomNavigationView bottomNavigationView = mainBinding.bottomNavigationView;
     navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+
+    NavigationUI.setupWithNavController(bottomNavigationView, navController);
+    NavigationUI.setupActionBarWithNavController(this, navController);
+    navController.navigate(R.id.homeFragment);
 
     navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
       @Override
@@ -51,11 +57,19 @@ public class MainActivity extends AppCompatActivity {
         } else {
           mainBinding.bottomNavigationView.setVisibility(View.VISIBLE);
         }
+        if (R.id.homeFragment == destination.getId()
+                || R.id.medicineFragment == destination.getId()
+                || R.id.surveyFragment == destination.getId()) {
+          ActionBar actionBar = getSupportActionBar();
+          if (actionBar != null) {
+            actionBar.setHomeButtonEnabled(false);
+            actionBar.setDisplayHomeAsUpEnabled(false);
+            actionBar.setDisplayShowHomeEnabled(false);
+          }
+        }
       }
     });
 
-    NavigationUI.setupWithNavController(bottomNavigationView, navController);
-    NavigationUI.setupActionBarWithNavController(this, navController);
 
     //TODO unset alarms once
     //AlarmViewModel alarmViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(this.getApplication())).get(AlarmViewModel.class);
