@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
@@ -17,6 +18,7 @@ import android.view.View;
 
 import com.adam51.przypominacz_leki.R;
 import com.adam51.przypominacz_leki.databinding.ActivityMainBinding;
+import com.adam51.przypominacz_leki.viewmodel.AlarmViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
@@ -46,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
 
         ) {
           mainBinding.bottomNavigationView.setVisibility(View.GONE);
-          //getActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
         } else {
           mainBinding.bottomNavigationView.setVisibility(View.VISIBLE);
         }
@@ -55,6 +56,10 @@ public class MainActivity extends AppCompatActivity {
 
     NavigationUI.setupWithNavController(bottomNavigationView, navController);
     NavigationUI.setupActionBarWithNavController(this, navController);
+
+    //TODO unset alarms once
+    //AlarmViewModel alarmViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(this.getApplication())).get(AlarmViewModel.class);
+    //alarmViewModel.unSetupAllAlarms(false);
 
   }
 

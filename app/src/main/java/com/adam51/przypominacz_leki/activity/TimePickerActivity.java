@@ -101,19 +101,6 @@ public class TimePickerActivity extends AppCompatActivity
 
   }
 
-  /*
-  notificationManager = NotificationManagerCompat.from(getActivity());
-          addEditPillBinding.alarmAddButton.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View v) {
-      modeAlarm = false;
-      DialogFragment timePicker = new TimePickerFragment();
-      timePicker.show(getChildFragmentManager(), "time picker");
-    }
-  });
-  */
-
-
   @Override
   public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
     if (modeAlarm) {
@@ -166,6 +153,7 @@ public class TimePickerActivity extends AppCompatActivity
   private void cancelAlarm(int position) {
     Log.d(TAG, "cancelAlarm: fun");
     //TODO dodanie getActivity()
+
     AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
     Intent intent = new Intent(this, AlarmReceiver.class);
     intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -174,16 +162,10 @@ public class TimePickerActivity extends AppCompatActivity
     int id = alarm.getId();
     if (id != 0) {
       intent.putExtra(ALARM_EXTRA_STRING, id);
+      intent.putExtra(ALARM_EXTRA_STRING, current_pill.getName());
     }
     //getContext() zamist this
     PendingIntent pendingIntent = PendingIntent.getBroadcast(this, id, intent, 0);
-
-    Calendar calendar = Calendar.getInstance();
-    calendar.setTimeInMillis(System.currentTimeMillis());
-    calendar.set(Calendar.HOUR_OF_DAY, alarm.getHour());
-    calendar.set(Calendar.MINUTE, alarm.getMinute());
-    calendar.set(Calendar.SECOND, 0);
-    calendar.set(Calendar.DAY_OF_WEEK, 4);
 
     alarmManager.cancel(pendingIntent);
   }

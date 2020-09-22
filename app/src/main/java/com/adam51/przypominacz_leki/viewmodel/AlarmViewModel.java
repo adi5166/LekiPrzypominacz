@@ -11,6 +11,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 
 import com.adam51.przypominacz_leki.activity.MainActivity;
 import com.adam51.przypominacz_leki.model.Alarm;
@@ -21,10 +22,13 @@ import java.util.Calendar;
 import java.util.List;
 
 import static android.content.ContentValues.TAG;
+import static com.adam51.przypominacz_leki.App.ALARM_EXTRA_INT;
+import static com.adam51.przypominacz_leki.App.ALARM_EXTRA_STRING;
 
 public class AlarmViewModel extends AndroidViewModel {
   private AlarmRepository repository;
   private LiveData<List<Alarm>> allAlarms;
+  Observer<List<Alarm>> observer;
 
   public AlarmViewModel(@NonNull Application application) {
     super(application);
@@ -47,18 +51,10 @@ public class AlarmViewModel extends AndroidViewModel {
     intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
     PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplication(), alarm.getId(), intent, 0);
-
-    Calendar calendar = Calendar.getInstance();
-    calendar.setTimeInMillis(System.currentTimeMillis());
-    calendar.set(Calendar.HOUR_OF_DAY, alarm.getHour());
-    calendar.set(Calendar.MINUTE, alarm.getMinute());
-    calendar.set(Calendar.SECOND, 0);
-
     alarmManager.cancel(pendingIntent);
 
     repository.delete(alarm);
   }
-
 
   //TODO usunąć wszystko
   /*
@@ -89,13 +85,135 @@ public class AlarmViewModel extends AndroidViewModel {
     repository.deleteAlarmFromPill(pill_id);
   }
    */
-  public void deleteAlarmFromPill(int pill_id) {
+  public void cancelAlarmFromPill(final int pill_id, final String pill_name) {
+    final AlarmManager alarmManager = (AlarmManager) getApplication().getSystemService(Context.ALARM_SERVICE);
+    final Intent intent = new Intent(getApplication(), AlarmReceiver.class);
+    intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+    observer = new Observer<List<Alarm>>() {
+      @Override
+      public void onChanged(List<Alarm> alarms) {
+        for (int i = 0; i < alarms.size(); i++) {
+          if (alarms.get(i).getPill_id() == pill_id) {
+
+            intent.putExtra(ALARM_EXTRA_STRING, pill_name);
+            intent.putExtra(ALARM_EXTRA_INT, alarms.get(i).getId());
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplication(), alarms.get(i).getId(), intent, 0);
+            alarmManager.cancel(pendingIntent);
+          }
+        }
+      }
+    };
+    allAlarms.observeForever(observer);
+  }
+
+  public void startAlarmFromPill(final int pill_id, final String pill_name) {
+    final AlarmManager alarmManager = (AlarmManager) getApplication().getSystemService(Context.ALARM_SERVICE);
+    final Intent intent = new Intent(getApplication(), AlarmReceiver.class);
+    intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+    observer = new Observer<List<Alarm>>() {
+      @Override
+      public void onChanged(List<Alarm> alarms) {
+        for (int i = 0; i < alarms.size(); i++) {
+          if (alarms.get(i).getPill_id() == pill_id) {
+
+            intent.putExtra(ALARM_EXTRA_STRING, pill_name);
+            intent.putExtra(ALARM_EXTRA_INT, alarms.get(i).getId());
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplication(), alarms.get(i).getId(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(System.currentTimeMillis());
+            calendar.set(Calendar.HOUR_OF_DAY, alarms.get(i).getHour());
+            calendar.set(Calendar.MINUTE, alarms.get(i).getMinute());
+            calendar.set(Calendar.SECOND, 0);
+
+            if (calendar.before(Calendar.getInstance())) {
+              calendar.add(Calendar.DATE, 1);
+            }
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+
+            Alarm current_alarm = alarms.get(i);
+            current_alarm.setSetup(true);
+            update(current_alarm);
+          }
+          Log.d(TAG, "onChanged: start alarm name");
+        }
+      }
+    };
+    allAlarms.observeForever(observer);
+  }
+
+  public void deleteAlarmFromPill(final int pill_id) {
+    final AlarmManager alarmManager = (AlarmManager) getApplication().getSystemService(Context.ALARM_SERVICE);
+    final Intent intent = new Intent(getApplication(), AlarmReceiver.class);
+    intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+    observer = new Observer<List<Alarm>>() {
+      @Override
+      public void onChanged(List<Alarm> alarms) {
+        for (int i = 0; i < alarms.size(); i++) {
+          if (alarms.get(i).getPill_id() == pill_id) {
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplication(), alarms.get(i).getId(), intent, 0);
+            alarmManager.cancel(pendingIntent);
+          }
+        }
+      }
+    };
+    allAlarms.observeForever(observer);
     new DeleteAlarmAsyncTask(repository).execute(pill_id);
   }
 
-  private class DeleteAlarmAsyncTask extends AsyncTask<Integer, Void, Void> {
+  public void updateAlarmFromPill(final int pill_id, final String pill_name) {
+    final AlarmManager alarmManager = (AlarmManager) getApplication().getSystemService(Context.ALARM_SERVICE);
+    final Intent intent = new Intent(getApplication(), AlarmReceiver.class);
+    intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+    observer = new Observer<List<Alarm>>() {
+      @Override
+      public void onChanged(List<Alarm> alarms) {
+        for (int i = 0; i < alarms.size(); i++) {
+          if (alarms.get(i).getPill_id() == pill_id && alarms.get(i).isActive()) {
+
+            intent.putExtra(ALARM_EXTRA_STRING, pill_name);
+            intent.putExtra(ALARM_EXTRA_INT, alarms.get(i).getId());
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplication(), alarms.get(i).getId(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(System.currentTimeMillis());
+            calendar.set(Calendar.HOUR_OF_DAY, alarms.get(i).getHour());
+            calendar.set(Calendar.MINUTE, alarms.get(i).getMinute());
+            calendar.set(Calendar.SECOND, 0);
+
+            if (calendar.before(Calendar.getInstance())) {
+              calendar.add(Calendar.DATE, 1);
+            }
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+/*
+            Alarm current_alarm = alarms.get(i);
+            current_alarm.setSetup(true);
+            repository.update(current_alarm);*/
+          }
+        }
+        Log.d(TAG, "onChanged: update alarm name");
+      }
+    };
+    allAlarms.observeForever(observer);
+  }
+
+  @Override
+  protected void onCleared() {
+    super.onCleared();
+    allAlarms.removeObserver(observer);
+  }
+
+  public void setupAlarmFromPill(int pill_id, boolean setup) {
+
+  }
+
+  private static class DeleteAlarmAsyncTask extends AsyncTask<Integer, Void, Void> {
     AlarmRepository alarmRepository;
-    int idPill;
 
     public DeleteAlarmAsyncTask(AlarmRepository alarmRepository) {
       this.alarmRepository = alarmRepository;
@@ -104,28 +222,28 @@ public class AlarmViewModel extends AndroidViewModel {
     @Override
     protected Void doInBackground(Integer... integers) {
 
-      List<Alarm> alarmList = allAlarms.getValue();
+      Log.d(TAG, "doInBackground: before get all alarms");
+/*
       AlarmManager alarmManager = (AlarmManager) getApplication().getSystemService(Context.ALARM_SERVICE);
       Intent intent = new Intent(getApplication(), AlarmReceiver.class);
       intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-      for (Alarm alarm : alarmList
-      ) {
-        if (alarm.getPill_id() == idPill) {
 
-          PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplication(), alarm.getId(), intent, 0);
 
-          Calendar calendar = Calendar.getInstance();
-          calendar.setTimeInMillis(System.currentTimeMillis());
-          calendar.set(Calendar.HOUR_OF_DAY, alarm.getHour());
-          calendar.set(Calendar.MINUTE, alarm.getMinute());
-          calendar.set(Calendar.SECOND, 0);
 
-          alarmManager.cancel(pendingIntent);
-        } else Log.d(TAG, "deleteAlarmFromPill: alarmList is null");
+      if (alarmList != null) {
+        for (int i = 0; i < alarmList.size(); i++) {
+
+          if (alarmList.get(i).getPill_id() == idPill) {
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplication(), alarmList.get(i).getId(), intent, 0);
+            alarmManager.cancel(pendingIntent);
+          }
+
+        }
         alarmRepository.deleteAlarmFromPill(idPill);
+      } else Log.d(TAG, "deleteAlarmFromPill: alarmList is null");
 
-      }
-      Log.d(TAG, "onPostExecute: alarms deleted");
+ */
+      alarmRepository.deleteAlarmFromPill(integers[0]);
       return null;
     }
   }
@@ -141,22 +259,16 @@ public class AlarmViewModel extends AndroidViewModel {
     ) {
       PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplication(), alarm.getId(), intent, 0);
 
-      Calendar calendar = Calendar.getInstance();
-      calendar.setTimeInMillis(System.currentTimeMillis());
-      calendar.set(Calendar.HOUR_OF_DAY, alarm.getHour());
-      calendar.set(Calendar.MINUTE, alarm.getMinute());
-      calendar.set(Calendar.SECOND, 0);
-
       alarmManager.cancel(pendingIntent);
     }
     repository.deleteAllPills();
   }
 
-  public LiveData<List<Alarm>> getActiveAlarms(boolean active){
+  public LiveData<List<Alarm>> getActiveAlarms(boolean active) {
     return repository.getActiveAlarms(active);
   }
 
-  public void unSetupAllAlarms(boolean setup){
+  public void unSetupAllAlarms(boolean setup) {
     repository.unSetupAllAlarms(setup);
   }
 

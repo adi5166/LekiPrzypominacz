@@ -1,12 +1,16 @@
 package com.adam51.przypominacz_leki.helper;
 
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.Intent;
+import android.graphics.Color;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.adam51.przypominacz_leki.R.drawable;
+import com.adam51.przypominacz_leki.activity.MainActivity;
 
 import static com.adam51.przypominacz_leki.App.CHANNEL_ID;
 
@@ -32,10 +36,17 @@ public class NotificationHelper extends ContextWrapper {
   }
 
   public NotificationCompat.Builder getChannelNotification(String title, String text) {
+    Intent resultIntent = new Intent(this, MainActivity.class);
+    PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 1, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
     return new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
             .setContentTitle(title)
             .setContentText(text)
-            .setSmallIcon(drawable.ic_icon);
+            .setSmallIcon(drawable.ic_icon)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setContentIntent(resultPendingIntent)
+            .setAutoCancel(true)
+            .setColor(Color.BLUE);
   }
 }
 

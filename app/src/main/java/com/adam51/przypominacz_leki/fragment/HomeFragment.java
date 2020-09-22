@@ -52,6 +52,7 @@ public class HomeFragment extends Fragment {
                            Bundle savedInstanceState) {
     binding = FragmentHomeBinding.inflate(inflater, container, false);
     return binding.getRoot();
+
   }
 
   @Override
@@ -70,26 +71,33 @@ public class HomeFragment extends Fragment {
       @Override
       public void onChanged(List<Pill> pills) {
         homeAdapter.setPillList(pills);
+        for (Pill pill : pills
+        ) {
+          alarmViewModel.updateAlarmFromPill(pill.getId(), pill.getName());
+          //setAlarm(true) -> update
+        }
       }
     });
 
-    alarmViewModel.unSetupAllAlarms(false);
-    homeAdapter.setAlarmList(alarmViewModel.getActiveAlarms(true).getValue());
+    //alarmViewModel.unSetupAllAlarms(false);
     alarmViewModel.getActiveAlarms(true).observe(getViewLifecycleOwner(), new Observer<List<Alarm>>() {
       @Override
       public void onChanged(List<Alarm> alarms) {
         homeAdapter.setAlarmList(alarms);
+        /*
         for (int i = 0; i < alarms.size(); i++) {
           Alarm alarm = alarms.get(i);
           if (alarm.isActive() && !alarm.isSetup()) {
-            startAlarm(i);
-            alarm.setSetup(true);
-            alarmViewModel.update(alarm);
-            break;
+            //startAlarm(i);
+            //alarm.setSetup(true);
+            //alarmViewModel.update(alarm);
           }
         }
+
+         */
       }
     });
+
   }
 
   private void startAlarm(int position) {

@@ -2,20 +2,17 @@ package com.adam51.przypominacz_leki.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RadioButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -24,14 +21,9 @@ import com.adam51.przypominacz_leki.R;
 import com.adam51.przypominacz_leki.helper.Util;
 import com.adam51.przypominacz_leki.adapter.MedicineAdapter;
 import com.adam51.przypominacz_leki.databinding.FragmentDetailPillBinding;
-import com.adam51.przypominacz_leki.model.Alarm;
 import com.adam51.przypominacz_leki.model.Pill;
 import com.adam51.przypominacz_leki.viewmodel.AlarmViewModel;
 import com.adam51.przypominacz_leki.viewmodel.PillViewModel;
-
-import java.util.List;
-
-import static android.content.ContentValues.TAG;
 
 public class PillDetailFragment extends Fragment {
   private FragmentDetailPillBinding detailPillBinding;
@@ -74,7 +66,6 @@ public class PillDetailFragment extends Fragment {
 
       detailPillBinding.pillDetailName.setText(pill.getName());
       detailPillBinding.pillDetailDescription.setText(pill.getDescription());
-      Log.d(TAG, "onViewCreated: befor radio");
       String meal;
       switch (pill.getRadioId()) {
         case R.id.radio_pill_anytime: {
@@ -96,9 +87,7 @@ public class PillDetailFragment extends Fragment {
         default:
           meal = "Any time";
       }
-      Log.d(TAG, "onViewCreated: after radio 0");
       detailPillBinding.detailPillMeal.setText(meal);
-      Log.d(TAG, "onViewCreated: after radio set 1");
 
       Util.SetPillImageView(context, pill.getPicPath(), detailPillBinding.imageView);
 
@@ -146,20 +135,9 @@ public class PillDetailFragment extends Fragment {
           return true;
         }
         case R.id.menu_icon_pill_delete: {
-          //int position = PillDetailFragmentArgs.fromBundle(getArguments()).getPillId();
-          //pillViewModel.delete(pillViewModel.getAllPills().getValue().get(position));
           Pill pill = AddEditPillFragmentArgs.fromBundle(getArguments()).getPill();
-          final AlarmViewModel alarmViewModel = new ViewModelProvider(getActivity()).get(AlarmViewModel.class);
-          alarmViewModel.getAlarmFromPill(pill.getId()).observe(getViewLifecycleOwner(), new Observer<List<Alarm>>() {
-            @Override
-            public void onChanged(List<Alarm> alarms) {
-              if (!alarms.isEmpty()) {
-                Alarm alarm = alarms.get(0);
-                alarmViewModel.delete(alarm);
-              }
-            }
-          });
-
+          AlarmViewModel alarmViewModel = new ViewModelProvider(getActivity()).get(AlarmViewModel.class);
+          alarmViewModel.deleteAlarmFromPill(pill.getId());
           pillViewModel.delete(pill);
 
           navController.navigate(PillDetailFragmentDirections.actionPillDetailFragmentToMedicineFragment());
@@ -174,13 +152,4 @@ public class PillDetailFragment extends Fragment {
     }
     return false;
   }
-  /*
-  @Override
-  public void onDestroyView() {
-    super.onDestroyView();
-    Log.d(TAG, "onDestroyView: destroy");
-    pillViewModel.getAllPills().removeObservers(getViewLifecycleOwner());
-    //TODO nie wiem czy potrzebne, czy ovservwer wie że owner kończy życie
-  }
- */
 }

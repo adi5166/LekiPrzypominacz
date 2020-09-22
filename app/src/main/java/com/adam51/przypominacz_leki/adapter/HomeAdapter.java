@@ -70,8 +70,11 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeHolder> {
 
   @Override
   public int getItemCount() {
-    return alarmList.size();
+    if (alarmList != null) {
+      return alarmList.size();
+    }else return 0;
   }
+
 
 
   class HomeHolder extends RecyclerView.ViewHolder {

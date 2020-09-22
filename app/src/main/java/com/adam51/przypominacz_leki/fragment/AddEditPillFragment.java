@@ -1,12 +1,14 @@
 package com.adam51.przypominacz_leki.fragment;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -19,7 +21,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
-import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.adam51.przypominacz_leki.R;
@@ -30,13 +31,16 @@ import com.adam51.przypominacz_leki.databinding.FragmentAddEditPillBinding;
 import com.adam51.przypominacz_leki.model.Alarm;
 import com.adam51.przypominacz_leki.model.ImagePill;
 import com.adam51.przypominacz_leki.model.Pill;
+import com.adam51.przypominacz_leki.receiver.AlarmReceiver;
 import com.adam51.przypominacz_leki.viewmodel.AlarmViewModel;
 import com.adam51.przypominacz_leki.viewmodel.PillViewModel;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Calendar;
 
 import static android.content.ContentValues.TAG;
+import static com.adam51.przypominacz_leki.App.ALARM_EXTRA_INT;
+import static com.adam51.przypominacz_leki.App.ALARM_EXTRA_STRING;
 
 public class AddEditPillFragment extends Fragment {
 
@@ -102,7 +106,7 @@ public class AddEditPillFragment extends Fragment {
 
         final int position = AddEditPillFragmentArgs.fromBundle(getArguments()).getPillPosition();
         if (position != -5) {
-          Pill current_pill = AddEditPillFragmentArgs.fromBundle(getArguments()).getPill();
+          final Pill current_pill = AddEditPillFragmentArgs.fromBundle(getArguments()).getPill();
           addEditPillBinding.pillDetailName.setText(current_pill != null ? current_pill.getName() : "");
           addEditPillBinding.pillDetailDescription.setText(current_pill != null ? current_pill.getDescription() : "");
           int spinner_pos = getSpinnerPosition(current_pill.getPicPath());
@@ -111,6 +115,24 @@ public class AddEditPillFragment extends Fragment {
           }
           addEditPillBinding.radioGroupPill.check(current_pill.getRadioId());
           //Util.SetPillImageView(getContext(), current_pill. ,addEditPillBinding.spinnerPillAdd);
+
+/*
+          final AlarmAdapter alarmAdapter = new AlarmAdapter(null);
+
+          alarmViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(getActivity().getApplication())).get(AlarmViewModel.class);
+          alarmViewModel.getAlarmFromPill(current_pill.getId()).observe(getViewLifecycleOwner(), new Observer<List<Alarm>>() {
+            @Override
+            public void onChanged(List<Alarm> alarms) {
+              alarmAdapter.setAlarms(alarms);
+              for (int i = 0; i < alarmAdapter.getItemCount(); i++) {
+                Alarm alarm = alarms.get(i);
+                Log.d(TAG, "onChanged: start update alarm");
+                updateAlarm(alarm, current_pill);
+              }
+              //TODO update alarmów
+              //update
+            }
+          });*/
         }
 
         addEditPillBinding.alarmAddButton.setOnClickListener(new View.OnClickListener() {
@@ -223,6 +245,23 @@ public class AddEditPillFragment extends Fragment {
                 radioId);
         pill.setId(AddEditPillFragmentArgs.fromBundle(getArguments()).getPill().getId());
         pillViewModel.update(pill);
+        //alarmViewModel.cancelAlarmFromPill(AddEditPillFragmentArgs.fromBundle(getArguments()).getPill().getId());
+        alarmViewModel.updateAlarmFromPill(AddEditPillFragmentArgs.fromBundle(getArguments()).getPill().getId(),
+               pill.getName());
+
+        /*
+        List<Alarm> alarmList = alarmViewModel.getAlarmFromPill(pill.getId()).getValue();,
+        if (alarmList != null) {
+          for (int i = 0; i < alarmList.size(); i++) {
+            Alarm alarm = alarmList.get(i);
+
+
+            alarmViewModel.delete(alarm);
+          }
+        }
+*/
+
+        //TODO change name in all alarms
         Toast.makeText(getActivity(), "Pill updated", Toast.LENGTH_SHORT).show();
       } else {
         Toast.makeText(getActivity(), "Error while updating data", Toast.LENGTH_SHORT).show();
@@ -238,6 +277,8 @@ public class AddEditPillFragment extends Fragment {
     if (getArguments() != null) {
       Pill pill = AddEditPillFragmentArgs.fromBundle(getArguments()).getPill();
 
+      alarmViewModel.deleteAlarmFromPill(pill.getId());
+      /*
       alarmViewModel.getAlarmFromPill(pill.getId()).observe(getViewLifecycleOwner(), new Observer<List<Alarm>>() {
         @Override
         public void onChanged(List<Alarm> alarms) {
@@ -247,6 +288,8 @@ public class AddEditPillFragment extends Fragment {
           }
         }
       });
+      */
+
       /*
       List<Alarm> alarmList = alarmViewModel.getAlarmFromPill(pill.getId()).getValue();
       for (int i = 0; i < alarmList.size(); i++) {
@@ -256,7 +299,6 @@ public class AddEditPillFragment extends Fragment {
 
        */
 
-
       pillViewModel.delete(pill);
 
       navController.navigate(AddEditPillFragmentDirections.actionPillSavedBackToRecycler());
@@ -264,6 +306,35 @@ public class AddEditPillFragment extends Fragment {
     } else {
       Toast.makeText(getActivity(), "Error with Pill", Toast.LENGTH_SHORT).show();
     }
+  }
+
+  private void updateAlarm(Alarm alarm, Pill pill) {
+    Log.d(TAG, "updateAlarm: fun");
+    AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+    Intent intent = new Intent(getActivity(), AlarmReceiver.class);
+    intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+    int id = alarm.getId();
+    if (id != 0) {
+      intent.putExtra(ALARM_EXTRA_STRING, pill.getName());
+      intent.putExtra(ALARM_EXTRA_INT, id);
+    }
+    PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), id, intent, 0);
+
+    alarmManager.cancel(pendingIntent);
+
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTimeInMillis(System.currentTimeMillis());
+    calendar.set(Calendar.HOUR_OF_DAY, alarm.getHour());
+    calendar.set(Calendar.MINUTE, alarm.getMinute());
+    calendar.set(Calendar.SECOND, 0);
+
+    if (calendar.before(Calendar.getInstance())) {
+      calendar.add(Calendar.DATE, 1);
+    }
+
+
+    alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
   }
 
   private boolean isDataValid() {

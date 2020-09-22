@@ -146,8 +146,7 @@ public class AddEditSugarFragment extends Fragment {
   }
 
   private boolean isDataValid() {
-    return !(sugarBinding.textSugarInputNumber.getEditText().getText().toString().isEmpty()
-            || sugarBinding.sugarDetailDescription.getEditText().getText().toString().isEmpty());
+    return !(sugarBinding.textSugarInputNumber.getEditText().getText().toString().isEmpty());
   }
 
   @Override

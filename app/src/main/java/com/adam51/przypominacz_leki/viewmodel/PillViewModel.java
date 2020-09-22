@@ -33,7 +33,6 @@ public class PillViewModel extends AndroidViewModel {
   }
 
   public void delete(Pill pill) {
-    Log.d(TAG, "delete: pill: "+pill.getId());
     repository.delete(pill);
   }
 
