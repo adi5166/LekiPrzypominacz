@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <dimen name="medicineFragmentHorizontal">16dp</dimen>
+  <dimen name="medicineFragmentHorizontal">8dp</dimen>
   <dimen name="medicineFragmentVertical">8dp</dimen>
   <dimen name="medicineFragmentBottom">80dp</dimen>
   <dimen name="pill_size">48dp</dimen>

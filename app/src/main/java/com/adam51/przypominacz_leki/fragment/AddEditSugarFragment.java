@@ -23,6 +23,7 @@ import com.adam51.przypominacz_leki.model.Sugar;
 import com.adam51.przypominacz_leki.viewmodel.SugarViewModel;
 
 import java.util.Calendar;
+import java.util.Locale;
 
 public class AddEditSugarFragment extends Fragment {
   private FragmentAddEditSugarBinding sugarBinding;
@@ -58,7 +59,7 @@ public class AddEditSugarFragment extends Fragment {
 
         Calendar c = Calendar.getInstance();
         String time = c.get(Calendar.DAY_OF_MONTH) + "."
-                + (c.get(Calendar.MONTH) + 1) + ", "
+                + (c.get(Calendar.MONTH) + 1) + " - "
                 + c.get(Calendar.HOUR_OF_DAY) + ":"
                 + c.get(Calendar.MINUTE);
         sugarBinding.sugarInputTimeText.setText(time);

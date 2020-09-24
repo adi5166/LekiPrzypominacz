@@ -1,5 +1,6 @@
 package com.adam51.przypominacz_leki.adapter;
 
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.adam51.przypominacz_leki.databinding.FragmentHomeBinding;
 import com.adam51.przypominacz_leki.databinding.ItemAlarmBinding;
 import com.adam51.przypominacz_leki.databinding.ItemHomeBinding;
+import com.adam51.przypominacz_leki.helper.Util;
 import com.adam51.przypominacz_leki.model.Alarm;
 import com.adam51.przypominacz_leki.model.Pill;
 
@@ -39,6 +41,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.HomeHolder> {
     for (int i = 0; i < pillList.size(); i++) {
       if (pill_id == pillList.get(i).getId()) {
         pill_name = pillList.get(i).getName();
+        Util.SetPillImageView(Util.getPillImageID(pillList.get(i).getPicPath()), holder.binding.homePillImage);
         pill_list_id.add(i);
         break;
       }

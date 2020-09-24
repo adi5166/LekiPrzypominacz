@@ -13,11 +13,46 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import com.adam51.przypominacz_leki.R;
-import com.adam51.przypominacz_leki.model.ImagePill;
 
 import static android.content.ContentValues.TAG;
 
 public class Util {
+
+  public static int getPillImageID(String picPath) {
+    int resId;
+    switch (picPath) {
+      case "pill_oval_orange":
+        resId = R.drawable.pill_oval_orange;
+        break;
+      case "pill_oval_blue":
+        resId = R.drawable.pill_oval_blue;
+        break;
+      case "pill_oval_green":
+        resId = R.drawable.pill_oval_green;
+        break;
+      case "pill_oval_red":
+        resId = R.drawable.pill_oval_red;
+        break;
+      case "pill_oval_violet":
+        resId = R.drawable.pill_oval_violet;
+        break;
+      case "pill_oval_yellow":
+        resId = R.drawable.pill_oval_yellow;
+        break;
+      case "pill_oval_lime":
+        resId = R.drawable.pill_oval_lime;
+        break;
+      case "pill_oval_pink":
+        resId = R.drawable.pill_oval_pink;
+        break;
+      case "pill_oval_brown":
+        resId = R.drawable.pill_oval_brown;
+        break;
+      default:
+        resId = R.drawable.pill_oval;
+    }
+    return resId;
+  }
 
   public static void SetPillImageView(int resId, @Nullable ImageView imageView) {
     if (imageView == null) {
@@ -113,7 +148,7 @@ public class Util {
         color = R.color.oval_red;
         break;
       case "pill_oval_violet":
-        color = R.color.oavl_violet;
+        color = R.color.oval_violet;
         break;
       case "pill_oval_yellow":
         color = R.color.oval_yellow;

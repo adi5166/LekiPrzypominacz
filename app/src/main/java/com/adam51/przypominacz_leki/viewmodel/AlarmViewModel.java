@@ -177,7 +177,7 @@ public class AlarmViewModel extends AndroidViewModel {
       @Override
       public void onChanged(List<Alarm> alarms) {
         for (int i = 0; i < alarms.size(); i++) {
-          if (alarms.get(i).getPill_id() == pill_id && alarms.get(i).isActive()) {
+          if (alarms.get(i).getPill_id() == pill_id && alarms.get(i).isActive() && !alarms.get(i).isSetup()) {
 
             intent.putExtra(ALARM_EXTRA_COLOR, color);
             intent.putExtra(ALARM_EXTRA_STRING, pill_name);
@@ -194,13 +194,14 @@ public class AlarmViewModel extends AndroidViewModel {
               calendar.add(Calendar.DATE, 1);
             }
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-/*
+
             Alarm current_alarm = alarms.get(i);
             current_alarm.setSetup(true);
-            repository.update(current_alarm);*/
+            repository.update(current_alarm);
+            Log.d(TAG, "onChanged: update alarm name");
           }
         }
-        Log.d(TAG, "onChanged: update alarm name");
+
       }
     };
     allAlarms.observeForever(observer);
@@ -273,6 +274,7 @@ public class AlarmViewModel extends AndroidViewModel {
   }
 
   public void unSetupAllAlarms(boolean setup) {
+    Log.d(TAG, "unSetupAllAlarms: "+setup);
     repository.unSetupAllAlarms(setup);
   }
 

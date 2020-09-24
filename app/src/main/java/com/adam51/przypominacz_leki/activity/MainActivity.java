@@ -34,6 +34,9 @@ public class MainActivity extends AppCompatActivity {
     mainBinding = ActivityMainBinding.inflate(getLayoutInflater());
     setContentView(mainBinding.getRoot());
 
+    AlarmViewModel alarmViewModel = new ViewModelProvider(this).get(AlarmViewModel.class);
+    alarmViewModel.unSetupAllAlarms(false);
+
     BottomNavigationView bottomNavigationView = mainBinding.bottomNavigationView;
     navController = Navigation.findNavController(this, R.id.nav_host_fragment);
 

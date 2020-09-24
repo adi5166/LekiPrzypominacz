@@ -10,11 +10,11 @@
   <com.google.android.material.textfield.TextInputLayout
     android:id="@+id/text_sugar_input_number"
     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-    android:layout_width="match_parent"
+    android:layout_width="0dp"
     android:layout_height="wrap_content"
     android:layout_marginVertical="8dp"
-    android:layout_marginRight="60dp"
-    app:layout_constraintEnd_toEndOf="parent"
+    android:layout_marginEnd="8dp"
+    app:layout_constraintEnd_toStartOf="@+id/add_sugar_ml_text"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent">
 
