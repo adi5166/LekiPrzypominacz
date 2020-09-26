@@ -42,5 +42,12 @@ public class SurveyFragment extends Fragment {
         navController.navigate(SurveyFragmentDirections.actionSurveyFragmentToSugarFragment());
       }
     });
+
+    binding.surveyButtonPressure.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        navController.navigate(SurveyFragmentDirections.actionSurveyFragmentToPressureFragment());
+      }
+    });
   }
 }

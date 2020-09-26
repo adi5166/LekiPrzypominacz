@@ -11,7 +11,6 @@ import com.adam51.przypominacz_leki.model.Sugar;
 
 @Database(entities = Sugar.class, version = 1)
 public abstract class SugarDatabase extends RoomDatabase {
-
   private static SugarDatabase instance;
   public abstract SugarDao sugarDao();
 

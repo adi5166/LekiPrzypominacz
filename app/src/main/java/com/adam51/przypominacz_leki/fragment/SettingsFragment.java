@@ -16,11 +16,13 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.adam51.przypominacz_leki.databinding.FragmentSettingsBinding;
+import com.adam51.przypominacz_leki.viewmodel.PressureViewModel;
 import com.adam51.przypominacz_leki.viewmodel.SugarViewModel;
 
 public class SettingsFragment extends Fragment {
   private FragmentSettingsBinding binding;
   private SugarViewModel sugarViewModel;
+  private PressureViewModel pressureViewModel;
   private NavController navController;
 
   public SettingsFragment() {
@@ -44,6 +46,7 @@ public class SettingsFragment extends Fragment {
 
     navController = Navigation.findNavController(view);
     sugarViewModel = new ViewModelProvider(getActivity()).get(SugarViewModel.class);
+    pressureViewModel = new ViewModelProvider(getActivity()).get(PressureViewModel.class);
 
 
     binding.settingsDeleteSugarButton.setOnClickListener(new View.OnClickListener() {
@@ -51,6 +54,14 @@ public class SettingsFragment extends Fragment {
       public void onClick(View v) {
         sugarViewModel.deleteAllSugars();
         Toast.makeText(getContext(), "All sugar measurement deleted", Toast.LENGTH_SHORT).show();
+      }
+    });
+
+    binding.settingsDeletePressureButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        pressureViewModel.deleteAllPressures();
+        Toast.makeText(getContext(), "All blood pressure measurement deleted", Toast.LENGTH_SHORT).show();
       }
     });
   }

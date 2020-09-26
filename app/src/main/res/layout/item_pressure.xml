@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:padding="8dp"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+
+  <TextView
+    android:id="@+id/item_pressure_high"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="115"
+    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
+
+  <TextView
+    android:id="@+id/item_pressure_text"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="8dp"
+    android:layout_marginStart="8dp"
+    android:text="/"
+    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+    app:layout_constraintBottom_toBottomOf="@+id/item_pressure_high"
+    app:layout_constraintEnd_toStartOf="@+id/item_pressure_low"
+    app:layout_constraintStart_toEndOf="@+id/item_pressure_high" />
+
+  <TextView
+    android:id="@+id/item_pressure_low"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="8dp"
+    android:text="80"
+    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+    app:layout_constraintBottom_toBottomOf="@+id/item_pressure_text"
+    app:layout_constraintStart_toEndOf="@+id/item_pressure_text" />
+
+  <TextView
+    android:id="@+id/item_pressure_description"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="4dp"
+    android:text="Description"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="@+id/item_pressure_high"
+    app:layout_constraintTop_toBottomOf="@+id/item_pressure_high" />
+
+  <TextView
+    android:id="@+id/item_pressure_time"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="13.08, 11:25"
+    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+    app:layout_constraintBottom_toBottomOf="@+id/item_pressure_low"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintTop_toTopOf="@+id/item_pressure_low" />
+</androidx.constraintlayout.widget.ConstraintLayout>

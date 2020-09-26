@@ -2,6 +2,7 @@ package com.adam51.przypominacz_leki.activity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
@@ -11,6 +12,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,6 +22,8 @@ import com.adam51.przypominacz_leki.R;
 import com.adam51.przypominacz_leki.databinding.ActivityMainBinding;
 import com.adam51.przypominacz_leki.viewmodel.AlarmViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import static android.content.ContentValues.TAG;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -48,11 +52,22 @@ public class MainActivity extends AppCompatActivity {
                 || destination.getId() == R.id.settings
                 || destination.getId() == R.id.addSugarFragment
                 || destination.getId() == R.id.sugarFragment
-
+                || destination.getId() == R.id.addEditPressureFragment
+                || destination.getId() == R.id.pressureFragment
         ) {
           mainBinding.bottomNavigationView.setVisibility(View.GONE);
         } else {
           mainBinding.bottomNavigationView.setVisibility(View.VISIBLE);
+        }
+
+        if (R.id.medicineFragment == destination.getId()
+                || R.id.surveyFragment == destination.getId()) {
+          ActionBar actionBar = getSupportActionBar();
+          if (actionBar != null) {
+            actionBar.setHomeButtonEnabled(false);
+            actionBar.setDisplayHomeAsUpEnabled(false);
+            actionBar.setDisplayShowHomeEnabled(false);
+          }else Log.d(TAG, "onDestinationChanged: no actionBar");
         }
       }
     });

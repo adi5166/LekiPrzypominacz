@@ -33,11 +33,6 @@ public class AddEditSugarFragment extends Fragment {
   public AddEditSugarFragment() {
   }
 
-  @Override
-  public void onCreate(@Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-  }
-
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     sugarBinding = FragmentAddEditSugarBinding.inflate(inflater, container, false);
     return sugarBinding.getRoot();
@@ -98,8 +93,7 @@ public class AddEditSugarFragment extends Fragment {
 
   public void saveSugar() {
     if (isDataValid()) {
-      String quantity = sugarBinding.textSugarInputNumber.getEditText().getText().toString();
-      Sugar sugar = new Sugar(quantity,
+      Sugar sugar = new Sugar(sugarBinding.textSugarInputNumber.getEditText().getText().toString(),
               sugarBinding.sugarDetailDescription.getEditText().getText().toString(),
               sugarBinding.sugarInputTimeText.getText().toString());
 
@@ -124,11 +118,11 @@ public class AddEditSugarFragment extends Fragment {
         sugarViewModel.update(sugar);
         Toast.makeText(getActivity(), "Measurement saved", Toast.LENGTH_SHORT).show();
       } else {
-        Toast.makeText(getActivity(), "Error: Empty fields", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "Error while saving data", Toast.LENGTH_SHORT).show();
         return;
       }
     } else {
-      Toast.makeText(getActivity(), "Error while saving data", Toast.LENGTH_SHORT).show();
+      Toast.makeText(getActivity(), "Error: Empty fields", Toast.LENGTH_SHORT).show();
     }
     navController.navigate(AddEditSugarFragmentDirections.actionAddSugarFragmentToSugarFragment());
   }
@@ -136,7 +130,6 @@ public class AddEditSugarFragment extends Fragment {
   public void deleteSugar() {
     if (getArguments() != null) {
       Sugar sugar = AddEditSugarFragmentArgs.fromBundle(getArguments()).getSugar();
-
 
       sugarViewModel.delete(sugar);
       Toast.makeText(getActivity(), "Measurement deleted", Toast.LENGTH_SHORT).show();

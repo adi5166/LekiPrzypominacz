@@ -27,15 +27,15 @@ public class SugarRepository {
   }
 
   public void insert(Sugar sugar) {
-    new SugarRepository.InsertSugarAsyncTask(sugarDao).execute(sugar);
+    new InsertSugarAsyncTask(sugarDao).execute(sugar);
   }
 
   public void update(Sugar sugar) {
-    new SugarRepository.UpdateSugarAsyncTask(sugarDao).execute(sugar);
+    new UpdateSugarAsyncTask(sugarDao).execute(sugar);
   }
 
   public void delete(Sugar sugar) {
-    new SugarRepository.DeleteSugarAsyncTask(sugarDao).execute(sugar);
+    new DeleteSugarAsyncTask(sugarDao).execute(sugar);
   }
 
   public void deleteAllSugar() {

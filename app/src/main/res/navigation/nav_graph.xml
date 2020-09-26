@@ -34,6 +34,9 @@
     <action
       android:id="@+id/action_surveyFragment_to_sugarFragment"
       app:destination="@id/sugarFragment" />
+    <action
+      android:id="@+id/action_surveyFragment_to_pressureFragment"
+      app:destination="@id/pressureFragment" />
   </fragment>
   <fragment
     android:id="@+id/pillDetailFragment"
@@ -132,4 +135,40 @@
     android:name="com.adam51.przypominacz_leki.fragment.SettingsFragment"
     android:label="Settings"
     tools:layout="@layout/fragment_settings" />
+  <fragment
+    android:id="@+id/pressureFragment"
+    android:name="com.adam51.przypominacz_leki.fragment.PressureFragment"
+    android:label="Pressure Measurement"
+    tools:layout="@layout/fragment_pressure" >
+    <action
+      android:id="@+id/action_pressureFragment_to_addEditPressureFragment"
+      app:destination="@id/addEditPressureFragment" />
+  </fragment>
+  <fragment
+    android:id="@+id/addEditPressureFragment"
+    android:name="com.adam51.przypominacz_leki.fragment.AddEditPressureFragment"
+    android:label="{toolbar_name}"
+    tools:layout="@layout/fragment_add_edit_pressure">
+    <argument
+      android:name="toolbar_name"
+      android:defaultValue="Add Measurement"
+      app:argType="string" />
+    <argument
+      android:name="mode"
+      app:argType="string"
+      android:defaultValue="Add" />
+    <argument
+      android:name="pressure"
+      app:argType="com.adam51.przypominacz_leki.model.Pressure"
+      app:nullable="true" />
+    <argument
+      android:name="pressure_position"
+      app:argType="integer"
+      android:defaultValue="-5" />
+    <action
+      android:id="@+id/action_addEditPressureFragment_to_pressureFragment"
+      app:destination="@id/pressureFragment"
+      app:popUpTo="@id/pressureFragment"
+      app:popUpToInclusive="true" />
+  </fragment>
 </navigation>

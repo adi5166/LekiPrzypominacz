@@ -43,7 +43,7 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="16dp"
     android:layout_marginEnd="16dp"
-    android:text="23 sie, 11:08"
+    android:text="23.09, 11:08"
     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintTop_toBottomOf="@+id/text_sugar_input_number" />
@@ -90,7 +90,7 @@
     android:id="@+id/sugar_input_edit_button"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:text="Edit Measurement"
+    android:text="Update Measurement"
     android:visibility="gone"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"

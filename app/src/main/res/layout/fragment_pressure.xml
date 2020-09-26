@@ -2,29 +2,30 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
-  android:id="@+id/frameLayout"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:padding="16dp"
-  tools:context=".fragment.SurveyFragment">
+  tools:context=".fragment.PressureFragment">
 
-  <Button
-    android:id="@+id/survey_button_sugar"
+  <androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/pressure_recycler"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="8dp"
-    android:text="Sugar Measurement"
+    android:layout_height="0dp"
+    android:layout_marginBottom="8dp"
+    tools:listitem="@layout/item_pressure"
+    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+    app:layout_constraintBottom_toTopOf="@+id/pressure_add_measurement"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent" />
 
   <Button
-    android:id="@+id/survey_button_pressure"
+    android:id="@+id/pressure_add_measurement"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="8dp"
-    android:text="Pressure Measurement"
+    android:text="Add  Measurement"
+    app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@id/survey_button_sugar" />
+    app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
